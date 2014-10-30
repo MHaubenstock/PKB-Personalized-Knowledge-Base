@@ -1,6 +1,7 @@
 from app import app, db, login_manager
 from flask import render_template, flash, redirect, session, url_for, request, g
 from app.models import User
+from app.forms import LoginForm, RegisterForm
 from flask.ext.login import login_user, logout_user, current_user, login_required
 
 @login_manager.user_loader
@@ -20,7 +21,6 @@ def internal_error(error):
 def internal_error(error):
     db.session.rollback()
     return render_template('500.html'), 500
-
 
 # this is the default page that shows up when connecting
 # to the website (or localhost)
@@ -92,3 +92,9 @@ def login():
         else:
             form.username.errors.append("Invalid username!")
     return render_template('login.html', title = 'Sign In', form = form)
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('home'))

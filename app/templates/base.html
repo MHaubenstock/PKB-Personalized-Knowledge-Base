@@ -2,9 +2,9 @@
 <html>
   <head>
     {% if title %}
-    <title>{{title}} - MSND&amp;ACM</title>
+    <title>PKB - {{ title }}</title>
     {% else %}
-    <title>Program-A-Bull</title>
+    <title>PKB</title>
     {% endif %}
     <link href="/static/css/bootstrap.min.css" rel="stylesheet" media="screen">
     <link href="/static/css/bootstrap-responsive.min.css" rel="stylesheet">
@@ -21,9 +21,9 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
-          <a class="brand" href="/">Program-A-Bull</a>
+          <a class="brand" href="/">PKB (Personal Knowledge Base)</a>
           <ul class="nav">
-            <li><a href="{{ url_for('index') }}">Home</a></li>
+            <li><a href="{{ url_for('home') }}">Home</a></li>
             {% if g.user.is_authenticated() %}
             <li><a href="{{ url_for('logout') }}">Logout</a></li>
             {% else %}

@@ -2,7 +2,7 @@
 {% block content %}
 {% include 'flash.html' %}
 <div class="well">
-	<h3>Register for Program-A-Bull:</h3>
+	<h3>Register New PKB User:</h3>
 	<form action="{{ url_for('register') }}" method="post" class="form">
 		{{form.hidden_tag()}}
 		<div class="control-group {% if form.errors.username %} error {% endif %}">
