@@ -1,0 +1,36 @@
+body{
+	background-color: #d9d9d9;
+	margin: 12px;
+    font-family: Garamond;
+}
+
+h2{
+	font-family: Palatino Linotype;
+	color: #440088;
+}
+
+h3{
+	font-family: Garamond;
+	color: #555555;
+}
+
+h5{
+    font-family: Calibri;
+    font-size: 10px;
+}
+
+hr{
+    border: solid 1px #888888;
+}
+
+#splash{
+    padding: 12px;
+    background-color: #99bd91;
+    border: dotted 1px;
+}
+
+#login{
+    padding: 12px;
+    background-color: #ffffff;
+    border: solid 1px #440088;
+}
