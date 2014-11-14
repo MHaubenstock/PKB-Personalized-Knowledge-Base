@@ -22,13 +22,41 @@ def internal_error(error):
     db.session.rollback()
     return render_template('500.html'), 500
 
+@app.route('/')
+@app.route('/home', methods = ['GET', 'POST'])
+@login_required
+def home():
+    return render_template('home.html')
+
+
 # this is the default page that shows up when connecting
 # to the website (or localhost)
-@app.route('/')
-@app.route('/home', methods=['GET'])
-def home():
-	#return "THIS IS PKB BITCHEzzz"
-    return render_template('home.html')
+@app.route('/login', methods = ['GET', 'POST'])
+def login():
+    # if user is logged in, redirect them to index
+    if g.user is not None and g.user.is_authenticated():
+        return redirect(url_for('index'))
+    form = LoginForm()
+    # tries to login user
+    if form.validate_on_submit():
+        username = form.username.data
+        password = form.password.data
+        session['remember_me'] = form.remember_me.data
+        registered_user = User.query.filter_by(username=username).first()
+        if registered_user is not None:
+            if registered_user.check_password(password):
+                remember_me = False
+                if 'remember_me' in session:
+                    remember_me = session['remember_me']
+                    session.pop('remember_me', None)
+                login_user(registered_user, remember = remember_me)
+                flash('Logged in successfully')
+                return redirect(request.args.get('next') or url_for('index'))
+            else:
+                form.password.errors.append("Invalid password!")
+        else:
+            form.username.errors.append("Invalid username!")
+    return render_template('login.html', title = 'Sign In', form = form)
 
 @app.route('/register' , methods=['GET','POST'])
 def register():
@@ -65,34 +93,6 @@ def register():
         else:
             form.username.errors.append('That username is already taken!')
     return render_template('register.html', form = form)
-
-
-@app.route('/login', methods = ['GET', 'POST'])
-def login():
-    # if user is logged in, redirect them to index
-    if g.user is not None and g.user.is_authenticated():
-        return redirect(url_for('index'))
-    form = LoginForm()
-    # tries to login user
-    if form.validate_on_submit():
-        username = form.username.data
-        password = form.password.data
-        session['remember_me'] = form.remember_me.data
-        registered_user = User.query.filter_by(username=username).first()
-        if registered_user is not None:
-            if registered_user.check_password(password):
-                remember_me = False
-                if 'remember_me' in session:
-                    remember_me = session['remember_me']
-                    session.pop('remember_me', None)
-                login_user(registered_user, remember = remember_me)
-                flash('Logged in successfully')
-                return redirect(request.args.get('next') or url_for('index'))
-            else:
-                form.password.errors.append("Invalid password!")
-        else:
-            form.username.errors.append("Invalid username!")
-    return render_template('login.html', title = 'Sign In', form = form)
 
 @app.route('/logout')
 @login_required

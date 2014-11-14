@@ -8,9 +8,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     username = db.Column(db.String(64), index = True, unique = True)
     pwd_hash = db.Column(db.String(64))
-    score = db.Column(db.Integer, default = 0)
     role = db.Column(db.SmallInteger, default = ROLE_USER)
-    files = db.relationship('UserFile', backref = 'team', lazy = 'dynamic')
 
     def __init__(self, username, password, role=ROLE_USER):
         self.username = username
