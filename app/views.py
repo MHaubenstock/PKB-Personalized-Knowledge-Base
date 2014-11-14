@@ -99,3 +99,8 @@ def register():
 def logout():
     logout_user()
     return redirect(url_for('home'))
+
+@app.route('/topic')
+@login_required
+def topic():
+    return render_template('topic.html')
