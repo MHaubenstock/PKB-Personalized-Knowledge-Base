@@ -3,6 +3,7 @@ from flask import render_template, flash, redirect, session, url_for, request, g
 from app.models import User
 from app.forms import LoginForm, RegisterForm
 from flask.ext.login import login_user, logout_user, current_user, login_required
+import os
 
 @login_manager.user_loader
 def load_user(id):
@@ -69,23 +70,6 @@ def register():
         new_user = User.query.filter_by(username=form.username.data).first()
         if new_user is None:
             user = User(form.username.data, form.password.data)
-
-            # makes directory to store files on
-            directory = os.path.join(app.config['UPLOAD_FOLDER'], 'Teams', form.username.data)
-            if not os.path.exists(directory):
-                os.makedirs(directory)
-
-            db.session.add(user)
-
-            # creates UserFile objects to represent team submissions
-            for i in range(30):
-                user_file = UserFile(
-                    problem_number=i+1,
-                    status="Not Submitted",
-                    timestamp = datetime.utcnow(),
-                    team = user)
-                db.session.add(user_file)
-
             db.session.commit()
 
             flash('User successfully registered')
