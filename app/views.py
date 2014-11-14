@@ -52,7 +52,7 @@ def login():
                     session.pop('remember_me', None)
                 login_user(registered_user, remember = remember_me)
                 flash('Logged in successfully')
-                return redirect(request.args.get('next') or url_for('index'))
+                return redirect(request.args.get('next') or url_for('home'))
             else:
                 form.password.errors.append("Invalid password!")
         else:
@@ -70,6 +70,7 @@ def register():
         new_user = User.query.filter_by(username=form.username.data).first()
         if new_user is None:
             user = User(form.username.data, form.password.data)
+            db.session.add(user)
             db.session.commit()
 
             flash('User successfully registered')
