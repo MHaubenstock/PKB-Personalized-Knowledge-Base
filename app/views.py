@@ -27,7 +27,8 @@ def internal_error(error):
 @app.route('/')
 @app.route('/home', methods=['GET'])
 def home():
-	return "THIS IS PKB BITCHEzzz"
+	#return "THIS IS PKB BITCHEzzz"
+    return render_template('home.html')
 
 @app.route('/register' , methods=['GET','POST'])
 def register():
