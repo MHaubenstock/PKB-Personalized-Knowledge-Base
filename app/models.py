@@ -9,6 +9,7 @@ class User(db.Model):
     username = db.Column(db.String(64), index = True, unique = True)
     pwd_hash = db.Column(db.String(64))
     role = db.Column(db.SmallInteger, default = ROLE_USER)
+    topics = db.relationship('UserTopic', backref = 'user', lazy = 'dynamic')
 
     def __init__(self, username, password, role=ROLE_USER):
         self.username = username
@@ -35,3 +36,14 @@ class User(db.Model):
 
     def __repr__(self):
         return '<User %r>' % (self.username)
+
+class UserTopic(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    title = db.Column(db.String(40))
+    description = db.Column(db.String(1000))
+    parent = db.Column(db.String(40))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    def __init__(self, title, tags=[]):
+        self.title = title
+        self.tags = tags
