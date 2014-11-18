@@ -34,3 +34,9 @@ hr{
     background-color: #ffffff;
     border: solid 1px #440088;
 }
+
+.well{
+    padding: 12px;
+    background-color: #99bd91;
+    border: dotted 1px #440088;
+}
