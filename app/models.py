@@ -44,6 +44,7 @@ class UserTopic(db.Model):
     parent = db.Column(db.String(40))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
-    def __init__(self, title, tags=[]):
+    def __init__(self, title, parent, tags=[]):
         self.title = title
+        self.parent = parent
         self.tags = tags

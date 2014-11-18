@@ -1,6 +1,7 @@
 from app import app, db, login_manager
 from flask import render_template, flash, redirect, session, url_for, request, g
 from app.models import User
+from app.models import UserTopic
 from app.forms import LoginForm, RegisterForm
 from flask.ext.login import login_user, logout_user, current_user, login_required
 import os
@@ -87,5 +88,14 @@ def logout():
 
 @app.route('/topic')
 @login_required
-def topic(topicTitle = None, subtopics=["subtopic1", "subtopic1", "subtopic1", "subtopic1"]):
+def topic(topicTitle = None):
+
+    '''
+    db.session.add(UserTopic("Test Topic", "Test Parent", []))
+    db.session.add(UserTopic("Test Topic2", "Test Topic", []))
+    '''
+    subtopics = [s.title for s in UserTopic.query.filter(UserTopic.parent == topicTitle).all()]
+
     return render_template('topic.html', topic=topicTitle, subTopics=subtopics)
+
+

@@ -5,18 +5,16 @@
 <div class="well">
     <!-- this page should have the topic name at the top, then a text box for notes about the topic below it, then children topics of this topic below that, then tags for this topic-->
     <h2> {{ topic }}</h2> 
-
+    <!-- tags here -->
     <textarea wrap="hard" cols="100" name="topicDescription">Enter information about this topic here.</textarea>
-
+    <button type="button">Save</button>
     <p>&nbsp;</p>
     <div class="Subtopics">
-    {% if subTopics|length > 0 %}
-        {% for subTopic in subTopics %}
-            <button type="button">{{ subTopic }}</button>
-        {% endfor %}
-    {% else %}
-        <button type="button">dksj</button>
-    {% endif %}
+    {% for subTopic in subTopics %}
+        <button type="button">{{ subTopic }}</button>
+    {% endfor %}
+    <p>&nbsp;</p>
+    <button type="button">Add a subtopic</button>
     </div>
 
 </div>
