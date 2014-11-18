@@ -87,5 +87,5 @@ def logout():
 
 @app.route('/topic')
 @login_required
-def topic():
-    return render_template('topic.html')
+def topic(topicTitle = None, subtopics=["subtopic1", "subtopic1", "subtopic1", "subtopic1"]):
+    return render_template('topic.html', topic=topicTitle, subTopics=subtopics)
