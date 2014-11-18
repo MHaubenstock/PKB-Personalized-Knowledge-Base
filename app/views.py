@@ -35,9 +35,9 @@ def home():
 # to the website (or localhost)
 @app.route('/login', methods = ['GET', 'POST'])
 def login():
-    # if user is logged in, redirect them to index
+    # if user is logged in, redirect them to home
     if g.user is not None and g.user.is_authenticated():
-        return redirect(url_for('index'))
+        return redirect(url_for('home'))
     form = LoginForm()
     # tries to login user
     if form.validate_on_submit():
@@ -62,9 +62,9 @@ def login():
 
 @app.route('/register' , methods=['GET','POST'])
 def register():
-    # if user is logged in, redirect them to index
+    # if user is logged in, redirect them to home
     if g.user is not None and g.user.is_authenticated():
-        return redirect(url_for('index'))
+        return redirect(url_for('home'))
     form = RegisterForm()
     # tries to register user
     if form.validate_on_submit():
