@@ -15,3 +15,9 @@ class RegisterForm(Form):
 	password = PasswordField('New Password', validators = [DataRequired("Password Field Required"), Length(min=5, max=20), EqualTo('confirm', message='Passwords must match')])
 	confirm = PasswordField('Repeat Password')
 	recaptcha = RecaptchaField()
+
+class SaveTopic(Form):
+	pass
+
+class AddTopic(Form):
+	pass

@@ -3,8 +3,9 @@
 {% block content %}
 {% include 'flash.html' %}
 <div class="well">
-    <!-- this page should have the topic name at the top, then a text box for notes about the topic below it, then children topics of this topic below that, then tags for this topic-->
-    <h2> {{ topic }}</h2> 
+    <!-- This page allows you to create a sub topic -->
+    <h2>Child of {{ topicParent }}</h2> 
+
     <!-- tags here -->
     <form class="form" action="" method="post" name="updateTopicInfo">
         
@@ -29,7 +30,8 @@
         {% endfor %}
 
         <p>&nbsp;</p>
-        <form action="{{ url_for('addtopic', topicParent=topic) }}">
+
+        <form class="form" action="" method="post" name="addSubtopic">
             <input class="btn btn-primary" type="submit" value="Add a subtopic">
         </form>
     </div>

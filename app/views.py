@@ -88,14 +88,22 @@ def logout():
 
 @app.route('/topic')
 @login_required
-def topic(topicTitle = None):
+def topic(topicTitle = "Test Topic"):
+    db.session.add(UserTopic("Test Topic", "Test Parent", ["test", "nlah"]))
+    db.session.add(UserTopic("Test Topic2", "Test Topic", ["test2", "nlah2"]))
+    db.session.add(UserTopic("Test Topic3", "Test Topic", ["test3", "nlah3"]))
 
-    '''
-    db.session.add(UserTopic("Test Topic", "Test Parent", []))
-    db.session.add(UserTopic("Test Topic2", "Test Topic", []))
-    '''
-    subtopics = [s.title for s in UserTopic.query.filter(UserTopic.parent == topicTitle).all()]
+    subtopics = [s.title for s in UserTopic.query.filter(UserTopic.title == topicTitle).filter(UserTopic.parent == topicTitle).all()]
+    tags = UserTopic.query.filter(UserTopic.title == topicTitle).first().tags
 
-    return render_template('topic.html', topic=topicTitle, subTopics=subtopics)
+    #if form.validate_on_submit():
 
+    return render_template('topic.html', topic=topicTitle, subTopics=subtopics, tags=tags)
+
+
+@app.route('/addtopic/<topicParent>')
+@login_required
+def addtopic(topicParent = None):
+
+    return render_template('addtopic.html', topicParent=topicParent)
 
