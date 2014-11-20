@@ -28,7 +28,10 @@ def internal_error(error):
 @app.route('/home', methods = ['GET', 'POST'])
 @login_required
 def home():
-    return render_template('home.html')
+    #Get top level topic titles
+    topLevelTopicTitles = [t.title for t in UserTopic.query.filter(UserTopic.parent == g.user.username).all()]
+
+    return render_template('home.html', topics=topLevelTopicTitles)
 
 
 # this is the default page that shows up when connecting
@@ -88,11 +91,13 @@ def logout():
 
 @app.route('/<topic>', methods = ['GET', 'POST'])
 @login_required
-def topic(topic = "Test Topic", topicParent = None):
+def topic(topic = None, topicParent = None):
+    '''
     db.session.add(UserTopic("Test Topic", g.user.username, ["test", "nlah"]))
     db.session.add(UserTopic("Test Topic2", "Test Topic", ["test2", "nlah2"]))
     db.session.add(UserTopic("Test Topic3", "Test Topic", ["test3", "nlah3"]))
-
+    '''
+    
     thisTopic = UserTopic.query.filter(UserTopic.title == topic).first()
     description = thisTopic.description
 

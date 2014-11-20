@@ -43,6 +43,7 @@ class UserTopic(db.Model):
     description = db.Column(db.String(1000))
     parent = db.Column(db.String(40))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    tags = db.Column(db.PickleType)
 
     def __init__(self, title, parent, tags=[]):
         self.title = title
