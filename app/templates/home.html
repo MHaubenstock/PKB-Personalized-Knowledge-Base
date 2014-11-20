@@ -1,1 +1,12 @@
-This is User Home Page
+{% extends "base.html" %}
+{% block content %}
+{% include 'flash.html' %}
+{% include './models' %}
+<div class="well">
+  <h2>Welcome {{ User.username }}. Let's get started.</h2>
+  <p>
+    Welcome to PKB, the one stop repository for all you know and more!
+    Once you access your myPKB you can create and delete topics in your Topics list.
+  </p>
+  <a href="topic.html">Access myPKB</a>
+</div>
