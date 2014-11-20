@@ -2,7 +2,7 @@ from app import app, db, login_manager
 from flask import render_template, flash, redirect, session, url_for, request, g
 from app.models import User
 from app.models import UserTopic
-from app.forms import LoginForm, RegisterForm
+from app.forms import LoginForm, RegisterForm, EditTopic
 from flask.ext.login import login_user, logout_user, current_user, login_required
 import os
 
@@ -86,24 +86,42 @@ def logout():
     logout_user()
     return redirect(url_for('home'))
 
-@app.route('/topic')
+@app.route('/<topic>', methods = ['GET', 'POST'])
 @login_required
-def topic(topicTitle = "Test Topic"):
-    db.session.add(UserTopic("Test Topic", "Test Parent", ["test", "nlah"]))
+def topic(topic = "Test Topic", topicParent = None):
+    db.session.add(UserTopic("Test Topic", g.user.username, ["test", "nlah"]))
     db.session.add(UserTopic("Test Topic2", "Test Topic", ["test2", "nlah2"]))
     db.session.add(UserTopic("Test Topic3", "Test Topic", ["test3", "nlah3"]))
 
-    subtopics = [s.title for s in UserTopic.query.filter(UserTopic.title == topicTitle).filter(UserTopic.parent == topicTitle).all()]
-    tags = UserTopic.query.filter(UserTopic.title == topicTitle).first().tags
+    thisTopic = UserTopic.query.filter(UserTopic.title == topic).first()
+    description = thisTopic.description
 
+    if not thisTopic is None:
+        tags = thisTopic.tags
+    else: #Did not find topic, don't go to page
+        return redirect(url_for('home'))
+
+    subTopics = [s.title for s in UserTopic.query.filter(UserTopic.parent == topic).all()]
+
+    return render_template('topic.html', topic = topic, subTopics = subTopics, description = description, tags = tags)
+
+
+@app.route('/edittopic', methods = ['GET', 'POST'])
+@login_required
+def edittopic(topic = None, topicParent = None, tags = None):
+    topic = request.args.get('topic')
+    topicParent = request.args.get('topicParent')
+    tags = request.args.getlist('tags')
+
+    if not tags is None:
+        tags = ' '.join(tags)
+
+    description = request.args.get('description')
+
+    #For submitting topic data
+    form = EditTopic()
+    form.description.data = description
     #if form.validate_on_submit():
 
-    return render_template('topic.html', topic=topicTitle, subTopics=subtopics, tags=tags)
-
-
-@app.route('/addtopic/<topicParent>')
-@login_required
-def addtopic(topicParent = None):
-
-    return render_template('addtopic.html', topicParent=topicParent)
+    return render_template('edittopic.html', topic = topic, topicParent = topicParent, tags = tags, form = form)
 

@@ -5,33 +5,33 @@
 <div class="well">
     <!-- this page should have the topic name at the top, then a text box for notes about the topic below it, then children topics of this topic below that, then tags for this topic-->
     <h2> {{ topic }}</h2> 
+
     <!-- tags here -->
-    <form class="form" action="" method="post" name="updateTopicInfo">
-        
-        <textarea wrap="hard" cols="100" name="topicDescription">Enter information about this topic here.</textarea>
-        <br>
-        <input class="btn btn-large" type="submit" value="Save Topic">
-    </form>
-
-    <p>&nbsp;</p>
-
-    <h4>Tags</h4>
     {% for tag in tags %}
         <label class="label">{{ tag }}</label>
     {% endfor %}
 
     <p>&nbsp;</p>
 
-    <h4>Subtopics</h4>
+    <!-- Topic description -->
+    <textarea readonly wrap="hard" cols="100" name="topicDescription">{{ description }}</textarea>
+    <br>
+
+    <!-- Edit topic info button -->
+    <a href="{{ url_for('edittopic', topic=topic, tags=tags, description=description) }}" class="btn btn-primary" type="submit">Edit information</a>
+
+    <br><br><br>
+
     <div class="Subtopics">
+        <h4>Subtopics</h4>
         {% for subTopic in subTopics %}
-            <button type="button">{{ subTopic }}</button>
+            <a class="btn" type="submit" href="{{ url_for('topic', topic=subTopic, topicParent=topic) }}">{{ subTopic }}</a>
         {% endfor %}
 
-        <p>&nbsp;</p>
-        <form action="{{ url_for('addtopic', topicParent=topic) }}">
-            <input class="btn btn-primary" type="submit" value="Add a subtopic">
-        </form>
+        <br><br>
+
+        <!-- Add subtopc button -->
+        <a href="{{ url_for('edittopic', topic="", topicParent=topic) }}" class="btn btn-primary" type="submit" >Add a subtopic</a>
     </div>
 </div>
 {% endblock %}

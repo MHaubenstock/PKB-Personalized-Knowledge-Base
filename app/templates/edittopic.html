@@ -1,0 +1,43 @@
+
+{% extends "base.html" %}
+{% block content %}
+{% include 'flash.html' %}
+<div class="well">
+    <!-- This page allows you to create or edit a topic -->
+    {% if topicParent %}
+    <h3>Subtopic of {{ topicParent }}</h3>
+    {% else %}
+    <h2>Edit {{ topic }}</h2>
+    {% endif %}
+    {{ description }}
+    <form class="form" action="" method="post" name="updateTopicInfo">
+        <div class="control-group {% if form.errors.username %} error {% endif %}">
+            <div class="controls">
+                {{form.topicTitle(size=30, class = "span3", value=topic ,placeholder="Topic Title")}}<br>
+                {% for error in form.errors.topicTitle %}
+                <span class="help-inline">[{{error}}]</span><br>
+                {% endfor %}
+            </div>
+        </div>
+        <!-- tags here -->
+        <div class="control-group {% if form.errors.username %} error {% endif %}">
+            <div class="controls">
+                {{form.tags(size=30, class = "span3", value=tags, placeholder="Tags")}}<br>
+                {% for error in form.errors.tags %}
+                <span class="help-inline">[{{error}}]</span><br>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="control-group {% if form.errors.username %} error {% endif %}">
+            <div class="controls">
+                {{form.description(size=30, class = "span3", placeholder="Description")}}<br>
+                {% for error in form.errors.description %}
+                <span class="help-inline">[{{error}}]</span><br>
+                {% endfor %}
+            </div>
+        </div>
+        <input class="btn btn-primary" type="submit" value="Save Topic">
+    </form>
+</div>
+{% endblock %}

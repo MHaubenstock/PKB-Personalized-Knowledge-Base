@@ -48,3 +48,4 @@ class UserTopic(db.Model):
         self.title = title
         self.parent = parent
         self.tags = tags
+        self.description = ""
