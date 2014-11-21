@@ -9,8 +9,13 @@
   </p>
 
   <h4>Top Level Topics</h4>
+  {% if topics %}
   {% for topic in topics %}
-  	<a class="btn" type="submit" href="{{ url_for('topic', topic=topic, topicParent=g.user.username) }}">{{ topic }}</a>
+  	<a class="btn" type="submit" href="{{ url_for('topic', topic=topic, topicParent=user.username) }}">{{ topic }}</a>
   {% endfor %}
+  {% else %}
+	<br>
+	<a class="btn btn-primary btn-lg btn-block" href="{{ url_for('edittopic') }}">Create New Topic!</a>
+  {% endif %}
 </div>
 {% endblock %}

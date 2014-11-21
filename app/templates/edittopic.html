@@ -7,7 +7,11 @@
     {% if topicParent %}
     <h3>Subtopic of {{ topicParent }}</h3>
     {% else %}
+    {% if topic %}
     <h2>Edit {{ topic }}</h2>
+    {% else %}
+    <h2>Create New Topic!<h2>
+    {% endif %}
     {% endif %}
     {{ description }}
     <form class="form" action="" method="post" name="updateTopicInfo">
@@ -22,7 +26,7 @@
         <!-- tags here -->
         <div class="control-group {% if form.errors.username %} error {% endif %}">
             <div class="controls">
-                {{form.tags(size=30, class = "span3", value=tags, placeholder="Tags")}}<br>
+                {{form.tags(size=30, class = "span3", value=tags, placeholder="tags (ex: python, IO, strings) ")}}<br>
                 {% for error in form.errors.tags %}
                 <span class="help-inline">[{{error}}]</span><br>
                 {% endfor %}
@@ -31,7 +35,8 @@
 
         <div class="control-group {% if form.errors.username %} error {% endif %}">
             <div class="controls">
-                {{form.description(size=30, class = "span3", placeholder="Description")}}<br>
+                        <!-- CANT FIGURE OUT HOW TO DISPLAY DESCRIPTION BOX AS WIDER -->
+                {{ form.description(rows="20", cols="60", placeholder="Description")}}<br>
                 {% for error in form.errors.description %}
                 <span class="help-inline">[{{error}}]</span><br>
                 {% endfor %}

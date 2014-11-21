@@ -19,4 +19,4 @@ class RegisterForm(Form):
 class EditTopic(Form):
 	topicTitle = TextField("Topic title", validators = [DataRequired("Topic title required")])
 	tags = TextField("Tags")
-	description = TextAreaField("Description")
+	description = TextAreaField("Description", validators=[DataRequired("Must give a topic description!")])

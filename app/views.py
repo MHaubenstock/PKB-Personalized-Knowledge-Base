@@ -29,8 +29,8 @@ def internal_error(error):
 @login_required
 def home():
     #Get top level topic titles
-    topLevelTopicTitles = [t.title for t in UserTopic.query.filter(UserTopic.parent == g.user.username).all()]
-
+    user = g.user
+    topLevelTopicTitles = [t.title for t in user.topics]
     return render_template('home.html', topics=topLevelTopicTitles)
 
 
@@ -89,43 +89,67 @@ def logout():
     logout_user()
     return redirect(url_for('home'))
 
-@app.route('/<topic>', methods = ['GET', 'POST'])
+@app.route('/<topicParent>/<topic>', methods = ['GET', 'POST'])
 @login_required
+# you don't need to pass in None as default arguments, since users
+# won't be able to click on topics that don't exist. Can replace with:
+#
+# def topic(topic, topicParent):
 def topic(topic = None, topicParent = None):
     '''
     db.session.add(UserTopic("Test Topic", g.user.username, ["test", "nlah"]))
     db.session.add(UserTopic("Test Topic2", "Test Topic", ["test2", "nlah2"]))
     db.session.add(UserTopic("Test Topic3", "Test Topic", ["test3", "nlah3"]))
     '''
-    
+    # May be better to use:
+    # thisTopic = UserTopic.query.filter(title=topic).first()
+    # - the "title" is a keyword argument, not a boolean
     thisTopic = UserTopic.query.filter(UserTopic.title == topic).first()
-    description = thisTopic.description
-
+    
+    # this can be replaced with:
+    # if thisTopic:
     if not thisTopic is None:
+        description = thisTopic.description
         tags = thisTopic.tags
+    # why would they be able to click on a topic that doesn't exist?
     else: #Did not find topic, don't go to page
         return redirect(url_for('home'))
 
+    # May be better to use:
+    # thisTopic = UserTopic.query.filter(parent = topic).first().all()
+    # - the "title" is a keyword argument, not a boolean
     subTopics = [s.title for s in UserTopic.query.filter(UserTopic.parent == topic).all()]
 
     return render_template('topic.html', topic = topic, subTopics = subTopics, description = description, tags = tags)
 
-
-@app.route('/edittopic', methods = ['GET', 'POST'])
+# let's make a pretty usl like this!
+@app.route('/create_new_topic')
+@app.route('/<topicParent>/<topic>/edit_topic', methods = ['GET', 'POST'])
 @login_required
 def edittopic(topic = None, topicParent = None, tags = None):
+    """
+    # Why is this here??
+
     topic = request.args.get('topic')
     topicParent = request.args.get('topicParent')
     tags = request.args.getlist('tags')
+    """
 
-    if not tags is None:
+    if tags:
         tags = ' '.join(tags)
+    else:
+        tags = ''
 
+    # this doesn't do what you think it does, we need to query the DB for 
+    # the topic's description, passed in by button click
     description = request.args.get('description')
-
+    # need this:
+    if topic:
+        description = UserTopic.query.filter(title=topic)
+    else:
+        topic = ''
     #For submitting topic data
     form = EditTopic()
-    form.description.data = description
     #if form.validate_on_submit():
 
     return render_template('edittopic.html', topic = topic, topicParent = topicParent, tags = tags, form = form)
