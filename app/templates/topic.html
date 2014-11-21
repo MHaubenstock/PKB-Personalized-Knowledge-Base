@@ -3,7 +3,11 @@
 {% block content %}
 {% include 'flash.html' %}
 <div class="well">
-    <!-- this page should have the topic name at the top, then a text box for notes about the topic below it, then children topics of this topic below that, then tags for this topic-->
+    <!-- this page should have a link to the parent at the top, then the topic name, then tags for this topic, then a text box for notes about the topic below it, then children topics of this topic below that-->
+    {% if topicParentParent %}
+    <a href="{{ url_for('topic', topic=topicParent , topicParent=g.user.username) }}" class="btn btn-primary" type="submit" >Parent: {{ topicParent }}</a>
+    {% endif %}
+
     <h2> {{ topic }}</h2> 
 
     <!-- tags here -->
@@ -11,14 +15,14 @@
         <label class="label">{{ tag }}</label>
     {% endfor %}
 
-    <p>&nbsp;</p>
+    <br><br>
 
     <!-- Topic description -->
     <textarea readonly wrap="hard" cols="100" name="topicDescription">{{ description }}</textarea>
     <br>
 
     <!-- Edit topic info button -->
-    <a href="{{ url_for('edittopic', topic=topic, tags=tags, description=description) }}" class="btn btn-primary" type="submit">Edit information</a>
+    <a href="{{ url_for('edittopic', topic=topic, topicParent=topicParent) }}" class="btn btn-primary" type="submit">Edit information</a>
 
     <br><br><br>
 
@@ -31,7 +35,7 @@
         <br><br>
 
         <!-- Add subtopc button -->
-        <a href="{{ url_for('edittopic', topic="", topicParent=topic) }}" class="btn btn-primary" type="submit" >Add a subtopic</a>
+        <a href="{{ url_for('edittopic', topicParent=topic) }}" class="btn btn-primary" type="submit" >Add a subtopic</a>
     </div>
 </div>
 {% endblock %}

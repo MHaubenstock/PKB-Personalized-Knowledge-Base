@@ -30,6 +30,7 @@ def internal_error(error):
 def home():
     #Get top level topic titles
     user = g.user
+
     topLevelTopicTitles = [t.title for t in user.topics]
     return render_template('home.html', topics=topLevelTopicTitles)
 
@@ -91,66 +92,66 @@ def logout():
 
 @app.route('/<topicParent>/<topic>', methods = ['GET', 'POST'])
 @login_required
-# you don't need to pass in None as default arguments, since users
-# won't be able to click on topics that don't exist. Can replace with:
-#
-# def topic(topic, topicParent):
-def topic(topic = None, topicParent = None):
-    '''
-    db.session.add(UserTopic("Test Topic", g.user.username, ["test", "nlah"]))
-    db.session.add(UserTopic("Test Topic2", "Test Topic", ["test2", "nlah2"]))
-    db.session.add(UserTopic("Test Topic3", "Test Topic", ["test3", "nlah3"]))
-    '''
-    # May be better to use:
-    # thisTopic = UserTopic.query.filter(title=topic).first()
-    # - the "title" is a keyword argument, not a boolean
+def topic(topic, topicParent):
     thisTopic = UserTopic.query.filter(UserTopic.title == topic).first()
     
-    # this can be replaced with:
-    # if thisTopic:
-    if not thisTopic is None:
+    if thisTopic:
         description = thisTopic.description
         tags = thisTopic.tags
+        topicParentParent = UserTopic.query.filter(UserTopic.title == topic).first().parent
     # why would they be able to click on a topic that doesn't exist?
+    #If they try typing the topic into the address bar and it's incorrect it will redirect to the home page
     else: #Did not find topic, don't go to page
         return redirect(url_for('home'))
 
-    # May be better to use:
-    # thisTopic = UserTopic.query.filter(parent = topic).first().all()
-    # - the "title" is a keyword argument, not a boolean
     subTopics = [s.title for s in UserTopic.query.filter(UserTopic.parent == topic).all()]
 
-    return render_template('topic.html', topic = topic, subTopics = subTopics, description = description, tags = tags)
+    return render_template('topic.html', topic = topic, topicParent = topicParent, topicParentParent = topicParentParent, subTopics = subTopics, description = description, tags = tags)
 
-# let's make a pretty usl like this!
-@app.route('/create_new_topic')
+
+@app.route('/create_new_topic', methods = ['GET', 'POST'])
 @app.route('/<topicParent>/<topic>/edit_topic', methods = ['GET', 'POST'])
 @login_required
 def edittopic(topic = None, topicParent = None, tags = None):
-    """
-    # Why is this here??
-
-    topic = request.args.get('topic')
-    topicParent = request.args.get('topicParent')
-    tags = request.args.getlist('tags')
-    """
-
-    if tags:
-        tags = ' '.join(tags)
-    else:
-        tags = ''
-
-    # this doesn't do what you think it does, we need to query the DB for 
-    # the topic's description, passed in by button click
-    description = request.args.get('description')
-    # need this:
-    if topic:
-        description = UserTopic.query.filter(title=topic)
-    else:
-        topic = ''
     #For submitting topic data
     form = EditTopic()
-    #if form.validate_on_submit():
+
+    theTopic = UserTopic.query.filter(UserTopic.title == topic).first()
+    
+    if theTopic:
+        if theTopic.tags:
+            tags = ', '.join(theTopic.tags)
+        else:
+            tags = ''
+    
+        description = theTopic.description
+    else:
+        topic = ''
+        tags = ''
+        description = ''
+        #not passing topicparent to the function when it's not part of the route for some reason, so need to get it manually
+        topicParent = request.args.get('topicParent')
+
+    #couldn't get if form.validate_on_submit(): working
+    if request.method == 'POST': #and form.validate():
+        #if it's a new topic
+        if not theTopic:
+            theTopic = UserTopic(form.topicTitle.data, topicParent, [])
+            db.session.add(theTopic)
+
+        #Save topic information to the topic
+        theTopic.title = form.topicTitle.data
+        theTopic.tags = list(filter(lambda x: not x == '', form.tags.data.replace(' ', '').split(',')))
+        theTopic.description = form.description.data
+        theTopic.parent = topicParent
+
+        #if it's a top level topic, add it to user topics
+        if theTopic.parent == g.user.username:
+            g.user.topics.append(theTopic)
+
+        db.session.commit()
+
+        return redirect(url_for('topic', topic=theTopic.title, topicParent=theTopic.parent))
 
     return render_template('edittopic.html', topic = topic, topicParent = topicParent, tags = tags, form = form)
 

@@ -4,17 +4,15 @@
 {% include 'flash.html' %}
 <div class="well">
     <!-- This page allows you to create or edit a topic -->
-    {% if topicParent %}
-    <h3>Subtopic of {{ topicParent }}</h3>
-    {% else %}
-    {% if topic %}
+    {% if topicParent and topic %}
     <h2>Edit {{ topic }}</h2>
+    <form class="form" action="{{ url_for('edittopic', topic=topic, topicParent=topicParent) }}" method="post">
     {% else %}
     <h2>Create New Topic!<h2>
-    {% endif %}
+    <form class="form" action="{{ url_for('edittopic', topicParent=topicParent) }}" method="post">
     {% endif %}
     {{ description }}
-    <form class="form" action="" method="post" name="updateTopicInfo">
+    
         <div class="control-group {% if form.errors.username %} error {% endif %}">
             <div class="controls">
                 {{form.topicTitle(size=30, class = "span3", value=topic ,placeholder="Topic Title")}}<br>
@@ -42,7 +40,13 @@
                 {% endfor %}
             </div>
         </div>
-        <input class="btn btn-primary" type="submit" value="Save Topic">
+
+        <!-- Submit button -->
+        <div class="control-group">
+            <div class="controls">
+                <input class="btn btn-primary" type="submit" value="Save Topic">
+            </div>
+        </div>
     </form>
 </div>
 {% endblock %}
