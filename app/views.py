@@ -109,15 +109,23 @@ def topic(topic, topicParent):
     return render_template('topic.html', topic = topic, topicParent = topicParent, topicParentParent = topicParentParent, subTopics = subTopics, description = description, tags = tags)
 
 
-@app.route('/create_new_topic', methods = ['GET', 'POST'])
+""" 
+We need to think about adding "bread crumbs" to the site, for now 
+we should leave this url as it is, but notice the bug in the url.
+because sometimes there is no we need a way of generating a long url
+with all the topic parents chained. Or maybe we don't need to, and we implement
+a topic list of links to the respective topic page.
+||||||||||||||||||||||||||||||||||||||||||||||||||
+vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+"""
+@app.route('/<user>/create_new_topic', methods = ['GET', 'POST'])
 @app.route('/<topicParent>/<topic>/edit_topic', methods = ['GET', 'POST'])
 @login_required
-def edittopic(topic = None, topicParent = None, tags = None):
+def edittopic(user=None,topic=None,topicParent=None):
     #For submitting topic data
     form = EditTopic()
-
     theTopic = UserTopic.query.filter(UserTopic.title == topic).first()
-    
+
     if theTopic:
         if theTopic.tags:
             tags = ', '.join(theTopic.tags)
