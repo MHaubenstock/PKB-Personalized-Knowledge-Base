@@ -35,7 +35,7 @@ def home():
 
 # this is the default page that shows up when connecting
 # to the website (or localhost)
-@app.route('/')
+@app.route('/', methods = ['GET', 'POST'])
 @app.route('/login', methods = ['GET', 'POST'])
 def login():
     # if user is logged in, redirect them to home
