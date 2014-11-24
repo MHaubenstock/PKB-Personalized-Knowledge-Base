@@ -8,14 +8,31 @@
     Once you access your myPKB you can create and delete topics in your Topics list.
   </p>
 
-  <h3>Top Level Topics</h3>
-
-	{% for topic in topics %}
-		<a class="btn" type="submit" href="{{ url_for('topic', topic=topic, topicParent=g.user.username) }}">{{ topic }}</a>
-	{% endfor %}
-
-
-	<br><br>
+  <div class="panel panel-primary">
+    <div class="panel-heading">
+      <h2 class="panel-title">Top Level Topics</h2>
+    </div>
+    <div class="panel-body">
+      <div class="list-group">
+        {% for topic in topics %}
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">
+              <a href="{{ url_for('topic', topic=topic.title, topicParent=g.user.username) }}"><b>{{ topic.title }}</b></a>
+            </h3>
+          </div>
+          <div class="panel-body" style="padding-top:5px; padding-bottom:0px;">
+            <p>tags:
+            {% for tag in topic.tags %}
+            <a class="btn">{{ tag }}</a>
+            {% endfor %}
+            </p>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
 	<a class="btn btn-primary btn-lg btn-block" href="{{ url_for('edittopic', user=g.user.username) }}">Create New Topic!</a>
 
 </div>

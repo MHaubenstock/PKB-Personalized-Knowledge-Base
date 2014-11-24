@@ -24,19 +24,18 @@ def internal_error(error):
     db.session.rollback()
     return render_template('500.html'), 500
 
-@app.route('/')
 @app.route('/home', methods = ['GET', 'POST'])
 @login_required
 def home():
-    #Get top level topic titles
     user = g.user
-
-    topLevelTopicTitles = [t.title for t in user.topics]
+    #Get top level topic titles
+    topLevelTopicTitles = [t for t in user.topics]
     return render_template('home.html', topics=topLevelTopicTitles)
 
 
 # this is the default page that shows up when connecting
 # to the website (or localhost)
+@app.route('/')
 @app.route('/login', methods = ['GET', 'POST'])
 def login():
     # if user is logged in, redirect them to home
@@ -125,7 +124,7 @@ def edittopic(user=None,topic=None,topicParent=None):
     #For submitting topic data
     form = EditTopic()
     theTopic = UserTopic.query.filter(UserTopic.title == topic).first()
-
+    
     if theTopic:
         if theTopic.tags:
             tags = ', '.join(theTopic.tags)
@@ -156,7 +155,7 @@ def edittopic(user=None,topic=None,topicParent=None):
         #if it's a top level topic, add it to user topics
         if theTopic.parent == g.user.username:
             g.user.topics.append(theTopic)
-
+        
         db.session.commit()
 
         return redirect(url_for('topic', topic=theTopic.title, topicParent=theTopic.parent))
