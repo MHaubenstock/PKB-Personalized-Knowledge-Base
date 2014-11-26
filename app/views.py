@@ -32,7 +32,6 @@ def home(username):
     topLevelTopicTitles = [t for t in user.topics]
     return render_template('home.html', username=user.username, topics=topLevelTopicTitles)
 
-
 # this is the default page that shows up when connecting
 # to the website (or localhost)
 @app.route('/', methods = ['GET', 'POST'])
@@ -107,32 +106,19 @@ def topic(topic_name, topicParent):
 @app.route('/<user>/create_new_topic', methods = ['GET', 'POST'])
 @app.route('/<topicParent>/<topic>/edit_topic', methods = ['GET', 'POST'])
 @login_required
-def edittopic(user=None,topic_name=None,topicParent=None):
+def edittopic(user,topic_name=None,topicParent=None):
     #For submitting topic data
     form = EditTopic()
     topic = UserTopic.query.filter(UserTopic.title == topic_name).first()
-    
-    if topic:
-        if theTopic.tags:
-            tags = ', '.join(topic.tags)
-        else:
-            tags = ''
-    
-        description = topic.description
+    if topic is None: 
+        topic = UserTopic()
     else:
-        topic = ''
-        tags = ''
-        description = ''
-
-        # not passing topicparent to the function when it's not part of the route for 
-        # some reason, so need to get it manually
-        topicParent = request.args.get('topicParent')
-
+        topic = UserTopic()
     #couldn't get if form.validate_on_submit(): working
-    if request.method == 'POST': #and form.validate():
+    if form.validate_on_submit():
         #if it's a new topic
         if topic is None:
-            topic = UserTopic(form.topicTitle.data, topicParent, [])
+            topic = UserTopic(title=form.topicTitle.data, parent=topicParent)
             db.session.add(topic)
 
         #Save topic information to the topic
@@ -149,5 +135,5 @@ def edittopic(user=None,topic_name=None,topicParent=None):
 
         return redirect(url_for('topic', topic=theTopic.title, topicParent=theTopic.parent))
 
-    return render_template('edittopic.html', topic = topic, topicParent = topicParent, tags = tags, form = form)
+    return render_template('edittopic.html', topic = topic, topicParent = topicParent, tags = ', '.join(topic.tags), form = form)
 
