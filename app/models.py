@@ -10,7 +10,7 @@ class User(db.Model):
     pwd_hash = db.Column(db.String(64))
     role = db.Column(db.SmallInteger, default = ROLE_USER)
     topics = db.relationship('UserTopic', backref = 'user', lazy = 'dynamic')
-    email = db.Column(db.String(255), nullable=False, unique=True)
+    email = db.Column(db.String(255), unique=True)
     confirmed_at = db.Column(db.DateTime())
 
 

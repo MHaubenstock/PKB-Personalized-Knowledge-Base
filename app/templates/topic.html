@@ -46,14 +46,13 @@
                                 <h3 class="panel-title"><b>Subtopics:<b></h3>
                             </div>
                             <div class="panel-body" style="padding-top:5px; padding-bottom:0px;">
-                                FIGURE OUT THIS CONDITIONAL STATEMENT
-                                {% if subTopics %}
-                                    {% for subTopic in subTopics %}
-                                        <a class="btn" type="submit" href="{{ url_for('topic', topic_name=subTopic, topicParent=topic.title) }}">{{ subTopic }}</a>
-                                    {% endfor %}
-                                {% else %}
-                                    <p>No subtopics yet... add one!</p>
-                                {% endif %}
+                            {% if subTopics %}
+                                {% for subTopic in subTopics %}
+                                    <a class="btn" type="submit" href="{{ url_for('topic', topic_name=subTopic, topicParent=topic.title) }}">{{ subTopic }}</a>
+                                {% endfor %}
+                            {% else %}
+                                <p>No subtopics yet... add one!</p>
+                            {% endif %}
                             </div>
                             <div class="panel-footer">
                                 <a href="{{ url_for('edittopic', user=g.user.username, topicParent=topic.title) }}" class="btn btn-primary" type="submit" >Add a subtopic</a>
@@ -72,7 +71,7 @@
                                 <i class="fa fa-tags"></i>
                                 {% if topic.tags %}
                                     {% for tag in topic.tags %}
-                                    <span class="badge badge-info"><a class="btn">{{ tag }}</a></span>
+                                    <a class="btn">{{ tag }}</a>
                                     {% endfor %}
                                 {% else %}
                                 <p>Click Edit Topic to add some tags!</p>
