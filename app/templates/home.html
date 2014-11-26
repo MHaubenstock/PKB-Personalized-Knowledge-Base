@@ -1,55 +1,54 @@
 {% extends "base.html" %}
 {% block content %}
 {% include 'flash.html' %}
-<div class="well">
-  <div class="panel panel-primary">
-    <div class="panel-body">
-      <h2 class="text-primary" style="font-size:25px">Welcome to PKB {{ g.user.username }}. Let's get started...</h2>
-      <p class="text-info">
-        PKB is the one stop repository for all you know and more! Once you access your myPKB you can create and delete topics in your Topics list. Create your own personal knowledge encyclopedia to build and review as you learn more about your favorite topics!
-      </p>
-    </div>
-    <div class="panel-footer" style="padding:0 0 0 0">
-      <div class="panel panel-primary">
-        <div class="panel-heading">
-          <h2 class="panel-title" style="font-size:24px">Top Level Topics</h2>
-        </div>
-        <div class="panel-body">
-          <div class="list-group">
-            {% for topic in topics %}
-            <div class="panel panel-default">
-              <div class="panel-heading">
-                <h2 class="panel-title text-primary" style="font-size:18px;">
-                  <a href="{{ url_for('topic', topic_name=topic.title, topicParent=g.user.username) }}">
-                    <strong>{{ topic.title }}</strong>
-                  </a>
-                </h2>
-              </div>
-              <div class="panel-body" style="padding-top:5px; padding-bottom:5px;">
-                <label class="text-info">Description:</label>
-                <!-- lets put description here -->
-                {% if topic.description %}
-                  {{ topic.description }}
-                {% else %}
-                  ... No description yet!
-                {% endif %}
-              </div>
-
-              <div class="panel-footer" style="padding:0 0 0 0">
-                <div class="btn-group" role="group">
-                  <button class="btn btn-primary" disabled><span class="glyphicon glyphicon-tags" aria-hidden="true"><i class="icon-tags"></i></span>&nbsp;&nbsp;tags:</button>
-                  {% for tag in topic.tags %}
-                    <button class="btn btn-default">{{ tag }}</button>
-                  {% endfor %}
-                </div>
-              </div>
-
-            </div>
-            {% endfor %}
-          </div>
-        </div>
-      </div>
-    	<a class="btn btn-primary btn-lg btn-block" href="{{ url_for('edittopic', user=g.user.username) }}">Create New Topic!</a>
+<div class="panel panel-primary">
+  <div class="panel-body">
+    <h2 class="text-primary" style="font-size:25px">Welcome to PKB {{ g.user.username }}. Let's get started...</h2>
+    <p class="text-info">
+      PKB is the one stop repository for all you know and more! Once you access your myPKB you can create and delete topics in your Topics list. Create your own personal knowledge encyclopedia to build and review as you learn more about your favorite topics!
+    </p>
   </div>
+  <div class="panel-footer" style="padding:0 0 0 0">
+    <div class="panel panel-primary" style="margin-bottom:0px;">
+      <div class="panel-heading">
+        <h2 class="panel-title" style="font-size:24px">Top Level Topics</h2>
+      </div>
+      <div class="panel-body">
+        <div class="list-group">
+          {% for topic in topics %}
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h2 class="panel-title text-primary" style="font-size:18px;">
+                <a href="{{ url_for('topic', topic_name=topic.title, topicParent=g.user.username) }}">
+                  <strong>{{ topic.title }}</strong>
+                </a>
+              </h2>
+            </div>
+            <div class="panel-body" style="padding-top:5px; padding-bottom:5px;">
+              <label class="text-info">Description:</label>
+              <!-- lets put description here -->
+              {% if topic.description %}
+                {{ topic.description }}
+              {% else %}
+                ... No description yet!
+              {% endif %}
+            </div>
+
+            <div class="panel-footer" style="padding:0 0 0 0">
+              <div class="btn-group" role="group">
+                <button class="btn btn-primary" disabled><span class="glyphicon glyphicon-tags" aria-hidden="true"><i class="icon-tags"></i></span>&nbsp;&nbsp;tags:</button>
+                {% for tag in topic.tags %}
+                  <button class="btn btn-default">{{ tag }}</button>
+                {% endfor %}
+              </div>
+            </div>
+
+          </div>
+          {% endfor %}
+        </div>
+        <a class="btn btn-primary btn-lg btn-block" href="{{ url_for('edittopic', user=g.user.username) }}">Create New Topic!</a>
+      </div>
+    </div>
 </div>
+
 {% endblock %}

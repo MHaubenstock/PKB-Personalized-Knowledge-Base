@@ -1,43 +1,39 @@
 {% extends "base.html" %}
 {% block content %}
 {% include 'flash.html' %}
-<div class="well">
-    <div class="row">
-        <div class="col-md-4">
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    <h3 class="panel-title" style="font-size:25px;">Please sign in</h3>
-                </div>
-                <div class="panel-body">
-                    <form accept-charset="UTF-8" role="form" method="post">
-                    {{form.hidden_tag()}}
-                    <fieldset>
-                        <div class="form-group">
-                            {{ form.username(size=30, class = "span3", placeholder="Username") }}<br>
-                            {% for error in form.errors.username %}
-                            <span class="help-inline">[{{error}}]</span><br>
-                            {% endfor %}
-                        </div>
-                        <div class="form-group">
-                            {{form.password(size=30, class = "span3", placeholder="Password")}}<br>
-                            {% for error in form.errors.password %}
-                            <span class="help-inline">[{{error}}]</span><br>
-                            {% endfor %}
-                        </div>
-                        <div class="checkbox">
-                            <label class="checkbox" for="remember_me"> 
-                                {{ form.remember_me }} Remember Me                           
-                                <a style="float:right" href="{{ url_for('register') }}">Not Registered?</a>
-                            </label>
-                        </div>
-                        <input class="btn btn-lg btn-primary btn-block" type="submit" value="Login">
-                    </fieldset>
-                    </form>
-                </div>
+<div class="row">
+    <div class="col-md-4">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title" style="font-size:25px;">Please sign in</h3>
+            </div>
+            <div class="panel-body">
+                <form accept-charset="UTF-8" role="form" method="post">
+                {{form.hidden_tag()}}
+                <fieldset>
+                    <div class="form-group">
+                        {{ form.username(size=30, class = "span3", placeholder="Username") }}<br>
+                        {% for error in form.errors.username %}
+                        <span class="help-inline">[{{error}}]</span><br>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        {{form.password(size=30, class = "span3", placeholder="Password")}}<br>
+                        {% for error in form.errors.password %}
+                        <span class="help-inline">[{{error}}]</span><br>
+                        {% endfor %}
+                    </div>
+                    <div class="checkbox">
+                        <label class="checkbox" for="remember_me"> 
+                            {{ form.remember_me }} Remember Me                           
+                            <a style="float:right" href="{{ url_for('register') }}">Not Registered?</a>
+                        </label>
+                    </div>
+                    <input class="btn btn-lg btn-primary btn-block" type="submit" value="Login">
+                </fieldset>
+                </form>
             </div>
         </div>
     </div>
-    <br>
-    <h5>&copy;Copyright PythonGroup 2014. All Rights Reserved.</h5>
 </div>
 {% endblock %}
