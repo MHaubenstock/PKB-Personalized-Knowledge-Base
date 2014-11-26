@@ -14,8 +14,8 @@
             <div class="panel panel-primary">
 
                 <div class="panel-heading">
-                    <h3 class="panel-title">
-                      <b>{{ topic }}<b>
+                    <h3 class="panel-title" style="font-size:25px;">
+                      <b>{{ topic.title }}<b>
                     </h3>
                 </div>
 
@@ -53,14 +53,14 @@
                                     {% if subTopics %}
 
                                         {% for subTopic in subTopics %}
-                                            <a class="btn" type="submit" href="{{ url_for('topic', topic=subTopic, topicParent=topic) }}">{{ subTopic }}</a>
+                                            <a class="btn" type="submit" href="{{ url_for('topic', topic_name=subTopic, topicParent=topic.title) }}">{{ subTopic }}</a>
                                         {% endfor %}
                                     {% else %}
                                         <p>No subtopics yet... add one!</p>
                                     {% endif %}
                                 </div>
                                 <div class="panel-footer">
-                                    <a href="{{ url_for('edittopic', user=g.user.username, topicParent=topic) }}" class="btn btn-primary" type="submit" >Add a subtopic</a>
+                                    <a href="{{ url_for('edittopic', user=g.user.username, topicParent=topic.title) }}" class="btn btn-primary" type="submit" >Add a subtopic</a>
                                 </div>
                             </div>
                         </div>
@@ -89,7 +89,7 @@
                 </div>
 
                 <div class="panel-footer">
-                    <a href="{{ url_for('edittopic', user=g.user.username, topic=topic, topicParent=topicParent) }}" class="btn btn-primary" type="submit">Edit Topic</a>
+                    <a href="{{ url_for('edittopic', user=g.user.username, topic_name=topic.title, topicParent=topicParent) }}" class="btn btn-primary" type="submit">Edit Topic</a>
                 </div>
 
             </div>

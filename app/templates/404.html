@@ -3,5 +3,9 @@
 
 {% block content %}
 <h1>File Not Found</h1>
-<p><a href="{{url_for('home')}}">Back</a></p>
+{% if g.user.is_authenticated() %}
+<p><a href="{{url_for('home', username=g.user.username )}}">Back</a></p>
+{% else %}
+<p><a href="{{url_for('login') }}">Back</a></p>
+{% endif %}
 {% endblock %}

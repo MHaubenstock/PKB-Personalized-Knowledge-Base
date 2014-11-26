@@ -7,9 +7,9 @@
     <title>PKB</title>
     {% endif %}
     <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
     <!-- Latest compiled and minified JavaScript -->
-    <script src="static/js/bootstrap.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
     <script src="http://code.jquery.com/jquery-latest.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
@@ -23,8 +23,8 @@
           </div>
           <div>
           <ul class="nav navbar-nav">
-            <li><a href="{{ url_for('home') }}">Home</a></li>
             {% if g.user.is_authenticated() %}
+            <li><a href="{{ url_for('home', username=g.user.username) }}">Home</a></li>
             <li><a href="{{ url_for('logout') }}">Logout</a></li>
             {% else %}
             <li><a href="{{ url_for('login') }}">Login</a></li>

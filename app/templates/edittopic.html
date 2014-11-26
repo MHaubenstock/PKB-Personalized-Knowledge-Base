@@ -53,7 +53,7 @@
         <div class="control-group">
             <div class="controls">
                 <input class="btn btn-primary" type="submit" value="Save Topic">
-                <a href="{{ url_for('home') }}", class="btn btn-danger">Cancel</a>
+                <a href="{{ url_for('home', username=g.user.username) }}", class="btn btn-danger">Cancel</a>
             </div>
         </div>
     </form>
