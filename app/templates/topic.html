@@ -1,98 +1,93 @@
 {% extends "base.html" %}
 {% block content %}
 {% include 'flash.html' %}
-<div class="well">
-    <!-- this page should have a link to the parent at the top, then the topic name, 
-         then tags for this topic, then a text box for notes about the topic below it, 
-         then children topics of this topic below that-->
-    {% if g.user.username not in [topicParent, topicParentParent] %}
-    <a href="{{ url_for('topic', topic=topicParent , topicParent=g.user.username) }}" class="btn btn-primary" type="submit" >Parent: {{ topicParent }}</a>
-    {% endif %}
+<!-- this page should have a link to the parent at the top, then the topic name, 
+     then tags for this topic, then a text box for notes about the topic below it, 
+     then children topics of this topic below that-->
+{% if g.user.username not in [topicParent, topicParentParent] %}
+<a href="{{ url_for('topic', topic=topicParent , topicParent=g.user.username) }}" class="btn btn-primary" type="submit" >Parent: {{ topicParent }}</a>
+{% endif %}
 
-    <div class="row">
-        <div class="col-md-6">
-            <div class="panel panel-primary">
+<div class="row">
+    <div class="col-md-6">
+        <div class="panel panel-primary">
 
-                <div class="panel-heading">
-                    <h3 class="panel-title" style="font-size:25px;">
-                      <b>{{ topic.title }}<b>
-                    </h3>
+            <div class="panel-heading">
+                <h3 class="panel-title" style="font-size:25px;">
+                  <b>{{ topic.title }}<b>
+                </h3>
+            </div>
+
+            <div class="panel-body">
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><b>Description:<b></h3>
+                            </div>
+                            <div class="panel-body" style="padding-top:5px; padding-bottom:0px;">
+                                <textarea readonly wrap="hard" style="width:100%; resize:none;" rows="10" name="topicDescription">
+                                    {% if description %}
+                                        {{ description }}
+                                    {% else %}
+                                    ... click Edit Topic to add a description!
+                                    {% endif %}
+                                </textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        
+                <div class="row">
+                    <div class="col-md-12"> 
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><b>Subtopics:<b></h3>
+                            </div>
+                            <div class="panel-body" style="padding-top:5px; padding-bottom:0px;">
+                                FIGURE OUT THIS CONDITIONAL STATEMENT
+                                {% if subTopics %}
+                                    {% for subTopic in subTopics %}
+                                        <a class="btn" type="submit" href="{{ url_for('topic', topic_name=subTopic, topicParent=topic.title) }}">{{ subTopic }}</a>
+                                    {% endfor %}
+                                {% else %}
+                                    <p>No subtopics yet... add one!</p>
+                                {% endif %}
+                            </div>
+                            <div class="panel-footer">
+                                <a href="{{ url_for('edittopic', user=g.user.username, topicParent=topic.title) }}" class="btn btn-primary" type="submit" >Add a subtopic</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="panel-body">
-
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <h3 class="panel-title"><b>Description:<b></h3>
-                                </div>
-                                <div class="panel-body" style="padding-top:5px; padding-bottom:0px;">
-                                    <textarea readonly wrap="hard" style="width:100%; resize:none;" rows="10" name="topicDescription">
-                                        {% if description %}
-                                            {{ description }}
-                                        {% else %}
-                                        ... click Edit Topic to add a description!
-                                        {% endif %}
-                                    </textarea>
-                                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><b>Tags<b></h3>
+                            </div>
+                            <div class="panel-body" style="padding-top:5px; padding-bottom:0px;">
+                                <i class="fa fa-tags"></i>
+                                {% if topic.tags %}
+                                    {% for tag in topic.tags %}
+                                    <span class="badge badge-info"><a class="btn">{{ tag }}</a></span>
+                                    {% endfor %}
+                                {% else %}
+                                <p>Click Edit Topic to add some tags!</p>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
-            
-                    <div class="row">
-                        <div class="col-md-12"> 
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <h3 class="panel-title"><b>Subtopics:<b></h3>
-                                </div>
-                                <div class="panel-body" style="padding-top:5px; padding-bottom:0px;">
-
-                                    FIGURE OUT THIS CONDITIONAL STATEMENT
-
-                                    {% if subTopics %}
-
-                                        {% for subTopic in subTopics %}
-                                            <a class="btn" type="submit" href="{{ url_for('topic', topic_name=subTopic, topicParent=topic.title) }}">{{ subTopic }}</a>
-                                        {% endfor %}
-                                    {% else %}
-                                        <p>No subtopics yet... add one!</p>
-                                    {% endif %}
-                                </div>
-                                <div class="panel-footer">
-                                    <a href="{{ url_for('edittopic', user=g.user.username, topicParent=topic.title) }}" class="btn btn-primary" type="submit" >Add a subtopic</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <h3 class="panel-title"><b>Tags<b></h3>
-                                </div>
-                                <div class="panel-body" style="padding-top:5px; padding-bottom:0px;">
-                                    <i class="fa fa-tags"></i>
-                                    {% if topic.tags %}
-                                        {% for tag in topic.tags %}
-                                        <span class="badge badge-info"><a class="btn">{{ tag }}</a></span>
-                                        {% endfor %}
-                                    {% else %}
-                                    <p>Click Edit Topic to add some tags!</p>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="panel-footer">
-                    <a href="{{ url_for('edittopic', user=g.user.username, topic_name=topic.title, topicParent=topicParent) }}" class="btn btn-primary" type="submit">Edit Topic</a>
                 </div>
 
             </div>
+
+            <div class="panel-footer">
+                <a href="{{ url_for('edittopic', user=g.user.username, topic_name=topic.title, topicParent=topicParent) }}" class="btn btn-primary" type="submit">Edit Topic</a>
+            </div>
+
         </div>
     </div>
 </div>

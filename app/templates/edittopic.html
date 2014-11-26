@@ -1,61 +1,55 @@
-
 {% extends "base.html" %}
 {% block content %}
 {% include 'flash.html' %}
-<div class="well">
-    <!-- This page allows you to create or edit a topic -->
-    {% if topicParent and topic %}
-    <h2>Edit {{ topic }}</h2>
-    <form class="form" action="{{ url_for('edittopic', user=g.user.username, topic=topic, topicParent=topicParent) }}" method="post">
+<!-- This page allows you to create or edit a topic -->
+{% if topicParent and topic %}
+<h2>Edit {{ topic }}</h2>
+{% else %}
+    {% if topicParent == g.user.username %}
+    <h2><u>Create New High-Level Topic:</u><h2>
     {% else %}
-    <div>
-        {% if topicParent == g.user.username %}
-        <h2><u>Create New High-Level Topic:</u><h2>
-        {% else %}
-        <h2><u>Create New Subtopic:</u><h2>
-        <h5>{ Child topic of {{ topicParent }} }</h5>
-        {% endif %}
-    </div>
-    <form class="form" action="{{ url_for('edittopic', user=g.user.username, topicParent=topicParent) }}" method="post">
+    <h2><u>Create New Subtopic:</u><h2>
+    <h5>Child topic of {{ topicParent }}</h5>
     {% endif %}
-    {{ description }}
-        
-        <!-- topic title -->
-        <div class="control-group {% if form.errors.username %} error {% endif %}">
-            <div class="controls">
-                {{form.topicTitle(size=30, class = "span3", value=topic ,placeholder="Topic Title")}}<br>
-                {% for error in form.errors.topicTitle %}
-                <span class="help-inline">[{{error}}]</span><br>
-                {% endfor %}
-            </div>
+{% endif %}
+<form accept-charset="UTF-8" role="form" method="post">
+{{form.hidden_tag()}}
+    
+    <!-- topic title  -->
+    <div class="control-group {% if form.errors.username %} error {% endif %}">
+        <div class="controls">
+            {{form.topicTitle(size=30, class = "span3", value=topic ,placeholder="Topic Title")}}<br>
+            {% for error in form.errors.topicTitle %}
+            <span class="help-inline">[{{error}}]</span><br>
+            {% endfor %}
         </div>
-        <!-- description -->
-        <div class="control-group {% if form.errors.username %} error {% endif %}">
-            <div class="controls">
-                        <!-- CANT FIGURE OUT HOW TO DISPLAY DESCRIPTION BOX AS WIDER -->
-                {{ form.description(class ="span6", rows="20", placeholder="Description")}}<br>
-                {% for error in form.errors.description %}
-                <span class="help-inline">[{{error}}]</span><br>
-                {% endfor %}
-            </div>
+    </div>
+    <!-- description -->
+    <div class="control-group {% if form.errors.username %} error {% endif %}">
+        <div class="controls">
+                    <!-- CANT FIGURE OUT HOW TO DISPLAY DESCRIPTION BOX AS WIDER -->
+            {{ form.description(class ="span6", rows="20", placeholder="Description")}}<br>
+            {% for error in form.errors.description %}
+            <span class="help-inline">[{{error}}]</span><br>
+            {% endfor %}
         </div>
-        <!-- tags -->
-        <div class="control-group {% if form.errors.username %} error {% endif %}">
-            <div class="controls">
-                {{form.tags(size=30, class = "span3", value=tags, placeholder="tags (ex: python, IO, strings) ")}}<br>
-                {% for error in form.errors.tags %}
-                <span class="help-inline">[{{error}}]</span><br>
-                {% endfor %}
-            </div>
+    </div>
+    <!-- tags -->
+    <div class="control-group {% if form.errors.username %} error {% endif %}">
+        <div class="controls">
+            {{form.tags(size=30, class = "span3", value=tags, placeholder="tags (ex: python, IO, strings) ")}}<br>
+            {% for error in form.errors.tags %}
+            <span class="help-inline">[{{error}}]</span><br>
+            {% endfor %}
         </div>
+    </div>
 
-        <!-- Submit button -->
-        <div class="control-group">
-            <div class="controls">
-                <input class="btn btn-primary" type="submit" value="Save Topic">
-                <a href="{{ url_for('home', username=g.user.username) }}", class="btn btn-danger">Cancel</a>
-            </div>
+    <!-- Submit button -->
+    <div class="control-group">
+        <div class="controls">
+            <input class="btn btn-primary" type="submit" value="Save Topic">
+            <a href="{{ url_for('home', username=g.user.username) }}", class="btn btn-danger">Cancel</a>
         </div>
-    </form>
-</div>
+    </div>
+</form>
 {% endblock %}
