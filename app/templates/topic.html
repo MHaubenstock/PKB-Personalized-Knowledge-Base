@@ -9,8 +9,8 @@
                 <h3 class="panel-title" style="font-size:25px;">
                     <b>{{ topic.title }}<b>
                 </h3>
-                {% if g.user.username not topic_parent %}
-                    <a href="{{ url_for('topic', topic=topic_parent , topic_parent=g.user.username) }}" class="btn btn-primary" type="submit" >Parent: {{ topic_parent }}</a>
+                {% if topic_parent != None %}
+                    <a href="{{ url_for('topic', topic_name=topic_parent.title, topic_parent=topic_parent.parent) }}" class="btn btn-primary" type="submit" >Parent: {{ topic_parent.title }}</a>
                 {% endif %}
             </div>
 
@@ -44,14 +44,14 @@
                             <div class="panel-body" style="padding-top:5px; padding-bottom:0px;">
                             {% if subTopics %}
                                 {% for subTopic in subTopics %}
-                                    <a class="btn" type="submit" href="{{ url_for('topic', topic_name=subTopic.title, topic_parent=subTopic.parent) }}">{{ subTopic }}</a>
+                                    <a class="btn" href="{{ url_for('topic', topic_name=subTopic.title, topic_parent=subTopic.parent) }}">{{ subTopic }}</a>
                                 {% endfor %}
                             {% else %}
                                 <p>No subtopics yet... add one!</p>
                             {% endif %}
                             </div>
                             <div class="panel-footer">
-                                <a href="{{ url_for('edittopic', user=g.user.username, topic_parent=topic.title) }}" class="btn btn-primary" type="submit" >Add a Subtopic</a>
+                                <a href="{{ url_for('create_new_topic', topic_parent=topic.title) }}" type="submit" class="btn btn-primary">Add a Subtopic</a>
                             </div>
                         </div>
                     </div>
@@ -80,7 +80,7 @@
             </div>
 
             <div class="panel-footer">
-                <a href="{{ url_for('create_new_topic', topic_name=topic_name, topic_parent=g.user.username) }}" class="btn btn-primary">Edit Topic</a>
+                <a href="{{ url_for('create_new_topic', topic_parent=topic_name) }}" class="btn btn-primary">Edit Topic</a>
             </div>
 
         </div>

@@ -99,10 +99,11 @@ def topic(topic_name, topic_parent):
     description = topic.description
     tags = topic.tags
     subTopics = [s for s in UserTopic.query.filter(UserTopic.parent == topic_name).all()]
+    topic_parent = UserTopic.query.filter_by(title=topic.parent).first()
 
-    return render_template('topic.html', topic = topic, subTopics = subTopics, description = description, tags = tags)
+    return render_template('topic.html', topic = topic, topic_parent=topic_parent, subTopics = subTopics, description = description, tags = tags)
 
-@app.route('/<topic_parent>/<topic_name>/edit_topic', methods = ['GET', 'POST'])
+@app.route('/<user>/<topic_parent>/<topic_name>/edit_topic', methods = ['GET', 'POST'])
 @login_required
 def edittopic(user,topic_name,topic_parent):
     #For submitting topic data
@@ -136,10 +137,11 @@ def edittopic(user,topic_name,topic_parent):
 
     return render_template('edittopic.html', topic_name=topic, topic_parent = topic_parent, tags = ', '.join(tags), form = form)
 
-@app.route('/<user>/create_new_topic', methods = ['GET', 'POST'])
+@app.route('/<topic_parent>/create_new_topic', methods = ['GET', 'POST'])
 @login_required
-def create_new_topic(user, topic_parent=None):
+def create_new_topic(topic_parent):
     form = EditTopic()
+
     if form.validate_on_submit():
         title = form.topicTitle.data
         parent = topic_parent
@@ -152,4 +154,4 @@ def create_new_topic(user, topic_parent=None):
         flash("Topic "+title+" created succesfully!")
         return redirect(url_for('topic', topic_name=title, topic_parent=parent))
 
-    return render_template('create_new_topic.html', user=user, topic_parent=topic_parent, form=form)
+    return render_template('create_new_topic.html', topic_parent=topic_parent, form=form)
