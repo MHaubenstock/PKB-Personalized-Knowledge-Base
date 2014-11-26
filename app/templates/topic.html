@@ -1,21 +1,17 @@
 {% extends "base.html" %}
 {% block content %}
 {% include 'flash.html' %}
-<!-- this page should have a link to the parent at the top, then the topic name, 
-     then tags for this topic, then a text box for notes about the topic below it, 
-     then children topics of this topic below that-->
-{% if g.user.username not in [topicParent, topicParentParent] %}
-<a href="{{ url_for('topic', topic=topicParent , topicParent=g.user.username) }}" class="btn btn-primary" type="submit" >Parent: {{ topicParent }}</a>
-{% endif %}
-
 <div class="row">
     <div class="col-md-6">
         <div class="panel panel-primary">
 
             <div class="panel-heading">
                 <h3 class="panel-title" style="font-size:25px;">
-                  <b>{{ topic.title }}<b>
+                    <b>{{ topic.title }}<b>
                 </h3>
+                {% if g.user.username not topic_parent %}
+                    <a href="{{ url_for('topic', topic=topic_parent , topic_parent=g.user.username) }}" class="btn btn-primary" type="submit" >Parent: {{ topic_parent }}</a>
+                {% endif %}
             </div>
 
             <div class="panel-body">
@@ -31,7 +27,7 @@
                                     {% if description %}
                                         {{ description }}
                                     {% else %}
-                                    ... click Edit Topic to add a description!
+                                        ... click Edit Topic to add a description!
                                     {% endif %}
                                 </textarea>
                             </div>
@@ -48,14 +44,14 @@
                             <div class="panel-body" style="padding-top:5px; padding-bottom:0px;">
                             {% if subTopics %}
                                 {% for subTopic in subTopics %}
-                                    <a class="btn" type="submit" href="{{ url_for('topic', topic_name=subTopic, topicParent=topic.title) }}">{{ subTopic }}</a>
+                                    <a class="btn" type="submit" href="{{ url_for('topic', topic_name=subTopic.title, topic_parent=subTopic.parent) }}">{{ subTopic }}</a>
                                 {% endfor %}
                             {% else %}
                                 <p>No subtopics yet... add one!</p>
                             {% endif %}
                             </div>
                             <div class="panel-footer">
-                                <a href="{{ url_for('edittopic', user=g.user.username, topicParent=topic.title) }}" class="btn btn-primary" type="submit" >Add a subtopic</a>
+                                <a href="{{ url_for('edittopic', user=g.user.username, topic_parent=topic.title) }}" class="btn btn-primary" type="submit" >Add a Subtopic</a>
                             </div>
                         </div>
                     </div>
@@ -84,7 +80,7 @@
             </div>
 
             <div class="panel-footer">
-                <a href="{{ url_for('edittopic', user=g.user.username, topic_name=topic.title, topicParent=topicParent) }}" class="btn btn-primary" type="submit">Edit Topic</a>
+                <a href="{{ url_for('create_new_topic', topic_name=topic_name, topic_parent=g.user.username) }}" class="btn btn-primary">Edit Topic</a>
             </div>
 
         </div>

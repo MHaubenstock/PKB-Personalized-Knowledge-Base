@@ -24,14 +24,6 @@ def internal_error(error):
     db.session.rollback()
     return render_template('500.html'), 500
 
-@app.route('/home/<username>', methods = ['GET', 'POST'])
-@login_required
-def home(username):
-    user = g.user
-    #Get top level topic titles
-    topLevelTopicTitles = [t for t in user.topics]
-    return render_template('home.html', username=user.username, topics=topLevelTopicTitles)
-
 # this is the default page that shows up when connecting
 # to the website (or localhost)
 @app.route('/', methods = ['GET', 'POST'])
@@ -88,9 +80,17 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 
-@app.route('/<topicParent>/<topic_name>', methods = ['GET', 'POST'])
+@app.route('/home/<username>', methods = ['GET', 'POST'])
 @login_required
-def topic(topic_name, topicParent):
+def home(username):
+    user = g.user
+    #Get top level topic titles
+    topLevelTopicTitles = [t for t in user.topics]
+    return render_template('home.html', username=user.username, topics=topLevelTopicTitles)
+
+@app.route('/<topic_parent>/<topic_name>', methods = ['GET', 'POST'])
+@login_required
+def topic(topic_name, topic_parent):
     topic = UserTopic.query.filter(UserTopic.title == topic_name).first()
     
     if topic is None:
@@ -98,34 +98,33 @@ def topic(topic_name, topicParent):
 
     description = topic.description
     tags = topic.tags
-    subTopics = [s.title for s in UserTopic.query.filter(UserTopic.parent == topic_name).all()]
-    topicParentParent = UserTopic.query.filter(UserTopic.title == topic_name).first().parent
+    subTopics = [s for s in UserTopic.query.filter(UserTopic.parent == topic_name).all()]
 
-    return render_template('topic.html', topic = topic, topicParent = topicParent, topicParentParent = topicParentParent, subTopics = subTopics, description = description, tags = tags)
+    return render_template('topic.html', topic = topic, subTopics = subTopics, description = description, tags = tags)
 
-@app.route('/<user>/create_new_topic', methods = ['GET', 'POST'])
-@app.route('/<topicParent>/<topic>/edit_topic', methods = ['GET', 'POST'])
+@app.route('/<topic_parent>/<topic_name>/edit_topic', methods = ['GET', 'POST'])
 @login_required
-def edittopic(user,topic_name=None,topicParent=None):
+def edittopic(user,topic_name,topic_parent):
     #For submitting topic data
     form = EditTopic()
     topic = UserTopic.query.filter(UserTopic.title == topic_name).first()
-    if topic is None: 
-        topic = UserTopic()
-    else:
-        topic = UserTopic()
+    tags = ""
+    if topic: 
+        topic_name=topic_title
+        topic_parent=topic.parent
+
     #couldn't get if form.validate_on_submit(): working
     if form.validate_on_submit():
         #if it's a new topic
         if topic is None:
-            topic = UserTopic(title=form.topicTitle.data, parent=topicParent)
+            topic = UserTopic(title=form.topicTitle.data, parent=g.user.username,)
             db.session.add(topic)
 
         #Save topic information to the topic
         topic.title = form.topicTitle.data
-        topic.tags = list(filter(lambda x: not x == '', form.tags.data.replace(' ', '').split(',')))
+        topic.tags = filter(lambda x: not x == '', form.tags.data.replace(' ', '').split(','))
         topic.description = form.description.data
-        topic.parent = topicParent
+        topic.parent = topic_parent
 
         #if it's a top level topic, add it to user topics
         if topic.parent == g.user.username:
@@ -133,7 +132,24 @@ def edittopic(user,topic_name=None,topicParent=None):
         
         db.session.commit()
 
-        return redirect(url_for('topic', topic=theTopic.title, topicParent=theTopic.parent))
+        return redirect(url_for('topic', topic=topic.title, topic_parent=topic.parent))
 
-    return render_template('edittopic.html', topic = topic, topicParent = topicParent, tags = ', '.join(topic.tags), form = form)
+    return render_template('edittopic.html', topic_name=topic, topic_parent = topic_parent, tags = ', '.join(tags), form = form)
 
+@app.route('/<user>/create_new_topic', methods = ['GET', 'POST'])
+@login_required
+def create_new_topic(user, topic_parent=None):
+    form = EditTopic()
+    if form.validate_on_submit():
+        title = form.topicTitle.data
+        parent = topic_parent
+        tags = form.tags.data.replace(' ', '').split(',')
+        description = form.data.description
+        topic = UserTopic(title, parent, tags, description)
+
+        db.session.add(topic)
+        db.session.commit()
+        flash("Topic "+title+" created succesfully!")
+        return redirect(url_for('topic', topic_name=title, topic_parent=parent))
+
+    return render_template('create_new_topic.html', user=user, topic_parent=topic_parent, form=form)

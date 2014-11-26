@@ -19,7 +19,7 @@
           <div class="panel panel-default">
             <div class="panel-heading">
               <h2 class="panel-title text-primary" style="font-size:18px;">
-                <a href="{{ url_for('topic', topic_name=topic.title, topicParent=g.user.username) }}">
+                <a href="{{ url_for('topic', topic_name=topic.title, topic_parent=g.user.username) }}">
                   <strong>{{ topic.title }}</strong>
                 </a>
               </h2>
@@ -44,9 +44,11 @@
             </div>
 
           </div>
-          {% endfor %}
+          {% endfor %
+
+          <!-- WHAT THE FUCKING FUCK IS WRONG WITH THIS BUTTON, WHY DOES IT NOT CORRECTLY SENT ARGS TO CREATE_NEW_TOPIC?!??!?!?! -->
         </div>
-        <a class="btn btn-primary btn-lg btn-block" href="{{ url_for('edittopic', user=g.user.username) }}">Create New Topic!</a>
+        <a class="btn btn-primary btn-lg btn-block" href="{{ redirect(url_for('create_new_topic', user=g.user.username, topic_parent=g.user.username)) }}">Create New Topic!</a>
       </div>
     </div>
   </div>

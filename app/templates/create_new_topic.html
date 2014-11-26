@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block content %}
+{% include 'flash.html' %}
+<!-- This page allows you to create a new topic-->
+<div class="row">
+    <div class="col-md-5">
+        <div class="panel panel-primary">
+            <div class="panel-heading" style="padding-bottom:0px;">
+                <h3 class="panel-title" style="font-size:25px;">Create New Topic<h3>
+                <p>{{ topic_parent, g.user.username }}
+                {% if topic_parent != g.user.username %}
+                    <h5>Child topic of <a style="color:#FFFFFF" href="url_for('topic', topic_name=topicParent, topicParent=UserTopic.query.filter(UserTopic.title == topic_parent).first().parent">{{ topic_parent }}</a></h5>
+                {% endif %}
+            </div>
+            <div class="panel-body">
+                <form accept-charset="UTF-8" role="form" method="post">
+                {{form.hidden_tag()}}
+                    
+                    <!-- topic title  -->
+                    <div class="form-group {% if form.errors.username %} error {% endif %}">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title" style="font-size:18px;">Topic Title</h3>
+                            </div>
+                            <div class="panel-body">
+                                {{form.topicTitle(size=30, class = "span3", value=topic ,placeholder="Enter title here...")}}<br>
+                                {% for error in form.errors.topicTitle %}
+                                <span class="help-inline">[{{error}}]</span><br>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <!-- description -->
+                    <div class="form-group {% if form.errors.username %} error {% endif %}">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title" style="font-size:18px;">Description</h3>
+                            </div>
+                            <div class="panel-body">
+                                {{ form.description(class="span3", placeholder="Enter description here...")}}<br>
+                                {% for error in form.errors.description %}
+                                <span class="help-inline">[{{error}}]</span><br>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <!-- tags -->
+                    <div class="form-group {% if form.errors.username %} error {% endif %}">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title" style="font-size:18px;">Tags</h3>
+                            </div>
+                            <div class="panel-body">
+                                {{form.tags(size=30, class = "span3", value=tags, placeholder="tags (ex: python, IO, strings) ")}}<br>
+                                {% for error in form.errors.tags %}
+                                <span class="help-inline">[{{error}}]</span><br>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submit button -->
+                    <div class="form-group">
+                        <input class="btn btn-primary" type="submit" value="Save Topic">
+                        <a href="{{ url_for('home', username=g.user.username) }}", class="btn btn-danger">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -6,13 +6,12 @@
     <div class="col-md-5">
         <div class="panel panel-primary">
             <div class="panel-heading" style="padding-bottom:0px;">
-                {% if topicParent and topic %}
-                <h3 class="panel-title" style="font-size:25px;">Edit {{ topic }}</h3>
-                {% elif topicParent == g.user.username %}
-                    <h3 class="panel-title" style="font-size:25px;">Create New High-Level Topic<h3>
+                <p>{{ topic_parent, topic_name }}</p>
+                {% if topic_name != None %}
+                    <h3 class="panel-title" style="font-size:25px;">Edit {{ topic }}</h3>
                 {% else %}
-                    <h3 class="panel-title" style="font-size:25px;">Create New Subtopic<h3>
-                    <h5>Child topic of <a style="color:#FFFFFF" href="url_for('topic', topic_name=topicParent, topicParent=UserTopic.query.filter(UserTopic.title == topicParent).first().parent">{{ topicParent }}</a></h5>
+                    <h3 class="panel-title" style="font-size:25px;">Create New Topic<h3>
+                    <h5>Child topic of <a style="color:#FFFFFF" href="url_for('topic', topic_name=topic_parent, topic_parent=UserTopic.query.filter(UserTopic.title == topic_parent).first().parent">{{ topic_parent }}</a></h5>
                 {% endif %}
             </div>
             <div class="panel-body">
@@ -51,7 +50,7 @@
                     <div class="form-group {% if form.errors.username %} error {% endif %}">
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                <h3 class="panel-title" style="font-size:18px;">Description</h3>
+                                <h3 class="panel-title" style="font-size:18px;">Tags</h3>
                             </div>
                             <div class="panel-body">
                                 {{form.tags(size=30, class = "span3", value=tags, placeholder="tags (ex: python, IO, strings) ")}}<br>
