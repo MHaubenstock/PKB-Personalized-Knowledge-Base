@@ -98,7 +98,7 @@ def topic(topic_name, topic_parent):
 
     description = topic.description
     tags = topic.tags
-    subTopics = [s for s in UserTopic.query.filter(UserTopic.parent == topic_name).all()]
+    subTopics = UserTopic.query.filter(UserTopic.parent == topic_name).all()
     topic_parent = UserTopic.query.filter_by(title=topic.parent).first()
 
     return render_template('topic.html', topic = topic, topic_parent=topic_parent, subTopics = subTopics, description = description, tags = tags)
@@ -110,9 +110,9 @@ def edittopic(user,topic_name,topic_parent):
     form = EditTopic()
     topic = UserTopic.query.filter(UserTopic.title == topic_name).first()
     tags = ""
-    if topic: 
-        topic_name=topic_title
-        topic_parent=topic.parent
+    if topic is None:
+        flash("That topic does not exist!")
+        redirect(url_for('home', username=g.user.username))
 
     #couldn't get if form.validate_on_submit(): working
     if form.validate_on_submit():
@@ -135,7 +135,7 @@ def edittopic(user,topic_name,topic_parent):
 
         return redirect(url_for('topic', topic=topic.title, topic_parent=topic.parent))
 
-    return render_template('edittopic.html', topic_name=topic, topic_parent = topic_parent, tags = ', '.join(tags), form = form)
+    return render_template('edittopic.html', topic_name=topic.title, topic_parent = topic_parent, tags = ', '.join(tags), form = form)
 
 @app.route('/<topic_parent>/create_new_topic', methods = ['GET', 'POST'])
 @login_required
@@ -146,7 +146,7 @@ def create_new_topic(topic_parent):
         title = form.topicTitle.data
         parent = topic_parent
         tags = form.tags.data.replace(' ', '').split(',')
-        description = form.data.description
+        description = form.description.data
         topic = UserTopic(title, parent, tags, description)
 
         db.session.add(topic)

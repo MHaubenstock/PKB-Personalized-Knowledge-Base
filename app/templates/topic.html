@@ -43,9 +43,16 @@
                             </div>
                             <div class="panel-body" style="padding-top:5px; padding-bottom:0px;">
                             {% if subTopics %}
+                                <p>
+
+                                <!-- BUG! 
+                                    DOES NOT DISPLAY SUBTOPICS AT ALL! 
+                                    DO NOT UNDERSTAND WHY!
+                                -->
                                 {% for subTopic in subTopics %}
-                                    <a class="btn" href="{{ url_for('topic', topic_name=subTopic.title, topic_parent=subTopic.parent) }}">{{ subTopic }}</a>
+                                    <a href="{{ url_for('topic', topic_name=subTopic.title, topic_parent=subTopic.parent) }}">{{ subTopic.title }}</a>
                                 {% endfor %}
+                                </p>
                             {% else %}
                                 <p>No subtopics yet... add one!</p>
                             {% endif %}
@@ -80,7 +87,8 @@
             </div>
 
             <div class="panel-footer">
-                <a href="{{ url_for('create_new_topic', topic_parent=topic_name) }}" class="btn btn-primary">Edit Topic</a>
+                {{ topic_parent, topic.title, g.user.username }}
+
             </div>
 
         </div>

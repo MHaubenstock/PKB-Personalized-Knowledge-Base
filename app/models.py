@@ -10,8 +10,8 @@ class User(db.Model):
     pwd_hash = db.Column(db.String(64))
     role = db.Column(db.SmallInteger, default = ROLE_USER)
     topics = db.relationship('UserTopic', backref = 'user', lazy = 'dynamic')
-    #email = db.Column(db.String(255), unique=True)
-    #confirmed_at = db.Column(db.DateTime())
+    email = db.Column(db.String(255), unique=True)
+    confirmed_at = db.Column(db.DateTime())
 
 
     def __init__(self, username, password, role=ROLE_USER):

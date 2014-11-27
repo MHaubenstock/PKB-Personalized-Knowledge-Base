@@ -7,9 +7,10 @@
         <div class="panel panel-primary">
             <div class="panel-heading" style="padding-bottom:0px;">
                 <h3 class="panel-title" style="font-size:25px;">Create New Topic<h3>
-                <p>{{ topic_parent, g.user.username }}
                 {% if topic_parent != g.user.username %}
                     <h5>Child topic of <a style="color:#FFFFFF" href="url_for('topic', topic_name=topicParent, topicParent=UserTopic.query.filter(UserTopic.title == topic_parent).first().parent">{{ topic_parent }}</a></h5>
+                {% else %}
+
                 {% endif %}
             </div>
             <div class="panel-body">
@@ -37,7 +38,7 @@
                                 <h3 class="panel-title" style="font-size:18px;">Description</h3>
                             </div>
                             <div class="panel-body">
-                                {{ form.description(class="span3", placeholder="Enter description here...")}}<br>
+                                {{ form.description(maxlength="255", placeholder="Enter description here...")}}<br>
                                 {% for error in form.errors.description %}
                                 <span class="help-inline">[{{error}}]</span><br>
                                 {% endfor %}
