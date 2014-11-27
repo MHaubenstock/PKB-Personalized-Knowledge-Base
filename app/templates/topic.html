@@ -10,7 +10,8 @@
                     <b>{{ topic.title }}<b>
                 </h3>
                 {% if topic_parent != None %}
-                    <a href="{{ url_for('topic', topic_name=topic_parent.title, topic_parent=topic_parent.parent) }}" class="btn btn-primary" type="submit" >Parent: {{ topic_parent.title }}</a>
+                    Parent: 
+                    <a href="{{ url_for('topic', topic_name=topic_parent.title, topic_parent=topic_parent.parent) }}" style="color:white;">{{ topic_parent.title }}</a>
                 {% endif %}
             </div>
 
@@ -23,13 +24,7 @@
                                 <h3 class="panel-title"><b>Description:<b></h3>
                             </div>
                             <div class="panel-body" style="padding-top:5px; padding-bottom:0px;">
-                                <textarea readonly wrap="hard" style="width:100%; resize:none;" rows="10" name="topicDescription">
-                                    {% if description %}
-                                        {{ description }}
-                                    {% else %}
-                                        ... click Edit Topic to add a description!
-                                    {% endif %}
-                                </textarea>
+                                <textarea readonly wrap="hard" style="width:100%; resize:none;" rows="10" name="topicDescription"></textarea>
                             </div>
                         </div>
                     </div>
@@ -41,21 +36,16 @@
                             <div class="panel-heading">
                                 <h3 class="panel-title"><b>Subtopics:<b></h3>
                             </div>
-                            <div class="panel-body" style="padding-top:5px; padding-bottom:0px;">
-                            {% if subTopics %}
-                                <p>
-
-                                <!-- BUG! 
-                                    DOES NOT DISPLAY SUBTOPICS AT ALL! 
-                                    DO NOT UNDERSTAND WHY!
-                                -->
-                                {% for subTopic in subTopics %}
-                                    <a href="{{ url_for('topic', topic_name=subTopic.title, topic_parent=subTopic.parent) }}">{{ subTopic.title }}</a>
-                                {% endfor %}
-                                </p>
-                            {% else %}
-                                <p>No subtopics yet... add one!</p>
-                            {% endif %}
+                            <div class="panel-body" style="padding-top:0px; padding-bottom:0px; font-size:15px;padding-left:0px; margin-left:0px">
+                                <div class="btn-group" role="group">
+                                {% if subTopics %}
+                                    {% for subTopic in subTopics %}
+                                        <a class="btn btn-default" href="{{ url_for('topic', topic_name=subTopic.title, topic_parent=subTopic.parent) }}">{{ subTopic.title }}</a>
+                                    {% endfor %}
+                                {% else %}
+                                    <p class="btn btn-default">No subtopics yet... add one!</p>
+                                {% endif %}
+                                </div>
                             </div>
                             <div class="panel-footer">
                                 <a href="{{ url_for('create_new_topic', topic_parent=topic.title) }}" type="submit" class="btn btn-primary">Add a Subtopic</a>
@@ -70,15 +60,17 @@
                             <div class="panel-heading">
                                 <h3 class="panel-title"><b>Tags<b></h3>
                             </div>
-                            <div class="panel-body" style="padding-top:5px; padding-bottom:0px;">
-                                <i class="fa fa-tags"></i>
-                                {% if topic.tags %}
-                                    {% for tag in topic.tags %}
-                                    <a class="btn">{{ tag }}</a>
-                                    {% endfor %}
-                                {% else %}
-                                <p>Click Edit Topic to add some tags!</p>
-                                {% endif %}
+                            <div class="panel-body" style="padding-top:0px; padding-bottom:0px; font-size:15px;padding-left:0px; margin-left:0px">
+                                <div class="btn-group">
+                                    <i class="fa fa-tags"></i>
+                                    {% if topic.tags %}
+                                        {% for tag in topic.tags %}
+                                        <button class="btn btn-default">{{ tag }}</button>
+                                        {% endfor %}
+                                    {% else %}
+                                    <p>Click Edit Topic to add some tags!</p>
+                                    {% endif %}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -87,8 +79,7 @@
             </div>
 
             <div class="panel-footer">
-                {{ topic_parent, topic.title, g.user.username }}
-
+                <a href="{{ url_for('edittopic', user=g.user.username, topic_name=topic.title, topic_parent=topic.parent) }}" class="btn btn-primary">Edit Topic</a>
             </div>
 
         </div>

@@ -92,7 +92,7 @@ def home(username):
 @login_required
 def topic(topic_name, topic_parent):
     topic = UserTopic.query.filter(UserTopic.title == topic_name).first()
-    
+
     if topic is None:
         return redirect(url_for('home', username=g.user.username))
 
@@ -108,39 +108,40 @@ def topic(topic_name, topic_parent):
 def edittopic(user,topic_name,topic_parent):
     #For submitting topic data
     form = EditTopic()
-    topic = UserTopic.query.filter(UserTopic.title == topic_name).first()
-    tags = ""
+
+    topic = UserTopic.query.filter_by(title = topic_name).first()
     if topic is None:
         flash("That topic does not exist!")
         redirect(url_for('home', username=g.user.username))
 
-    #couldn't get if form.validate_on_submit(): working
-    if form.validate_on_submit():
-        #if it's a new topic
-        if topic is None:
-            topic = UserTopic(title=form.topicTitle.data, parent=g.user.username,)
-            db.session.add(topic)
+    form.topicTitle.data = topic.title
+    form.description.data = topic.description
+    form.tags.data = ', '.join([str(tag) for tag in topic.tags])
 
-        #Save topic information to the topic
+    if form.validate_on_submit():
+        # gets new form data to update topic with
+        form = EditTopic(request.form)
+        # saves topic information to the topic
         topic.title = form.topicTitle.data
-        topic.tags = filter(lambda x: not x == '', form.tags.data.replace(' ', '').split(','))
+        topic.tags = [x for x in form.tags.data.replace(' ', '').split(',') if x != ""]
         topic.description = form.description.data
         topic.parent = topic_parent
 
-        #if it's a top level topic, add it to user topics
-        if topic.parent == g.user.username:
-            g.user.topics.append(topic)
-        
+        db.session.merge(topic)
         db.session.commit()
 
-        return redirect(url_for('topic', topic=topic.title, topic_parent=topic.parent))
+        return redirect(url_for('topic', topic_name=topic.title, topic_parent=topic.parent))
+    else:
+        for error in form.errors:
+            flash("Please enter a "+str(error)+" for "+topic_name)
 
-    return render_template('edittopic.html', topic_name=topic.title, topic_parent = topic_parent, tags = ', '.join(tags), form = form)
+    return render_template('edittopic.html', topic=topic, form=form)
 
 @app.route('/<topic_parent>/create_new_topic', methods = ['GET', 'POST'])
 @login_required
 def create_new_topic(topic_parent):
     form = EditTopic()
+    user = g.user
 
     if form.validate_on_submit():
         title = form.topicTitle.data
@@ -149,9 +150,18 @@ def create_new_topic(topic_parent):
         description = form.description.data
         topic = UserTopic(title, parent, tags, description)
 
+        # Adds topic to DB and adds topic to list of user topics
+        if topic.parent == user.username:
+            g.user.topics.append(topic)
+            db.session.add(g.user)
+
         db.session.add(topic)
         db.session.commit()
+
         flash("Topic "+title+" created succesfully!")
         return redirect(url_for('topic', topic_name=title, topic_parent=parent))
+    else:
+        for error in form.errors:
+            flash("Please enter a "+str(error)+" for "+topic_name)
 
     return render_template('create_new_topic.html', topic_parent=topic_parent, form=form)
