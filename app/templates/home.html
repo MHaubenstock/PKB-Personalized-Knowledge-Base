@@ -45,8 +45,6 @@
 
           </div>
           {% endfor %}
-
-          <!-- WHAT THE FUCKING FUCK IS WRONG WITH THIS BUTTON, WHY DOES IT NOT CORRECTLY SENT ARGS TO CREATE_NEW_TOPIC?!??!?!?! -->
         </div>
         <a class="btn btn-primary btn-lg btn-block" href="{{ url_for('create_new_topic', topic_parent=g.user.username) }}">Create New Topic!</a>
       </div>
