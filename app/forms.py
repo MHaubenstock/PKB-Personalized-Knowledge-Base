@@ -3,7 +3,7 @@ from app.models import User
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from flask_wtf.file import FileField, FileAllowed, FileRequired
 from wtforms import TextField, BooleanField, SubmitField, PasswordField, StringField, TextAreaField
-from wtforms.validators import Required, EqualTo, DataRequired, Length
+from wtforms.validators import Required, EqualTo, DataRequired, Length, Email
 
 class LoginForm(Form):
     username = TextField('Username', validators = [DataRequired(), Length(min=3, max=15)])
@@ -14,7 +14,7 @@ class RegisterForm(Form):
 	username = TextField("UserName", validators = [DataRequired("Username Field Required"), Length(min=3, max=15)])
 	password = PasswordField('New Password', validators = [DataRequired("Password Field Required"), Length(min=5, max=20), EqualTo('confirm', message='Passwords must match')])
 	confirm = PasswordField('Repeat Password')
-	email = TextField("Email", validators = [DataRequired("Email Required"), Length(min=6, max=30)])
+	email = TextField("Email", validators = [DataRequired("Email Required"), Length(min=6, max=30), Email()])
 	recaptcha = RecaptchaField()
 
 class EditTopic(Form):

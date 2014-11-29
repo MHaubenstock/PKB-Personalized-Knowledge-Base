@@ -64,7 +64,7 @@ def register():
     if form.validate_on_submit():
         new_user = User.query.filter_by(username=form.username.data).first()
         if new_user is None:
-            user = User(form.username.data, form.password.data)
+            user = User(form.username.data, form.email.data, form.password.data)
             db.session.add(user)
             db.session.commit()
 
