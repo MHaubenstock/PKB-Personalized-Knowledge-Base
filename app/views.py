@@ -177,6 +177,10 @@ def create_new_topic(topic_parent):
 
     return render_template('create_new_topic.html', topic_parent=topic_parent, form=form)
 
+@app.route('/help')
+def help_page():
+    return render_template('help.html')
+
 @app.route('/delete_topic/<parent_name>/<topic_name>')
 @login_required
 def delete_topic(parent_name,topic_name):
