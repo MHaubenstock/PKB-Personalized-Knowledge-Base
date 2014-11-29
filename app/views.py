@@ -152,8 +152,12 @@ def create_new_topic(topic_parent):
 
         topic = UserTopic.query.filter_by(title=title,parent=parent).first()
 
+        if title == parent:
+            flash("Topic " +title+" cannot have the same name as parent "+parent)
+            return render_template('create_new_topic.html', topic_parent=topic_parent, form=form)
+
         # if topic doesn'y already exist
-        if topic is None:
+        elif topic is None:
             topic = UserTopic(title, parent, tags, description)
             # Adds topic to DB and adds topic to list of user topics
             if topic.parent == user.username:
