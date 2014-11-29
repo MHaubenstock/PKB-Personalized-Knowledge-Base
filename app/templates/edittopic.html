@@ -10,7 +10,7 @@
                 {% if topic.parent != g.user.username %}
                     <h5>Child topic of <a style="color:#FFFFFF" id="parent" href="url_for('topic', topic_name=topic_parent, topic_parent=UserTopic.query.filter(UserTopic.title == topic_parent).first().parent">{{ topic.parent }}</a></h5>
                 {% else %}
-                    <h5 id="{{g.user.username}}">High Level Topic of <a style="color:#FFFFFF" id="parent"></a>{{topic.user}}</h5>
+                    <h5 id="{{g.user.username}}">High Level Topic of <a style="color:#FFFFFF" id="parent">{{topic.parent}}</a></h5>
                 {% endif %}
             </div>
             <div class="panel-body">

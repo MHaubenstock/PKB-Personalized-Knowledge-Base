@@ -176,9 +176,8 @@ def create_new_topic(topic_parent):
 
 @app.route('/delete_topic/<parent_name>/<topic_name>')
 @login_required
-def delete_topic(topic_name, parent_name):
+def delete_topic(parent_name,topic_name):
     topic = UserTopic.query.filter_by(title=topic_name, parent=parent_name).first()
-    
     if topic:
         flash("Deleted topic "+topic.title+"!")
         db.session.delete(topic)
