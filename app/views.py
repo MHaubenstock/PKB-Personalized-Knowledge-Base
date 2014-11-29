@@ -180,8 +180,20 @@ def delete_topic(parent_name,topic_name):
     topic = UserTopic.query.filter_by(title=topic_name, parent=parent_name).first()
     if topic:
         flash("Deleted topic "+topic.title+"!")
+        
+
+        # call get_subtopics here:
+        # subtopics = UserTopic.query.filter_by(parent = )
+        # delete all subtopics of topic to be deleted:
+
+
         db.session.delete(topic)
         db.session.commit()
     else:
         flash("That topic doesn't exist!")
     return redirect(url_for('home',username=g.user.username))
+
+""" Recursively dig through subtopic tree and return all subtopics of all
+    subtopics of the topic to be deleted.                               """
+def get_subtopics():
+    pass
