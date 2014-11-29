@@ -6,9 +6,11 @@
     <div class="col-md-5">
         <div class="panel panel-primary">
             <div class="panel-heading">
-                <h3 class="panel-title" style="font-size:25px;">Edit Topic: {{ topic.title }}</h3>
+                <h3 class="panel-title" style="font-size:25px;">Edit Topic: <b id="topic_title">{{ topic.title }}</b></h3>
                 {% if topic.parent != g.user.username %}
-                    <h5>Child topic of <a style="color:#FFFFFF" href="url_for('topic', topic_name=topic_parent, topic_parent=UserTopic.query.filter(UserTopic.title == topic_parent).first().parent">{{ topic.parent }}</a></h5>
+                    <h5>Child topic of <a style="color:#FFFFFF" id="parent" href="url_for('topic', topic_name=topic_parent, topic_parent=UserTopic.query.filter(UserTopic.title == topic_parent).first().parent">{{ topic.parent }}</a></h5>
+                {% else %}
+                    <h5 id="{{g.user.username}}">High Level Topic of <a style="color:#FFFFFF" id="parent"></a>{{topic.user}}</h5>
                 {% endif %}
             </div>
             <div class="panel-body">
@@ -21,7 +23,7 @@
                                 <h3 class="panel-title" style="font-size:18px;">Topic Title</h3>
                             </div>
                             <div class="panel-body">
-                                {{ form.topicTitle(size=30, class = "span3") }}<br>
+                                {{ form.topicTitle(size=30, style="width=70%;") }}<br>
                             </div>
                         </div>
                     </div>
@@ -32,7 +34,7 @@
                                 <h3 class="panel-title" style="font-size:18px;">Description</h3>
                             </div>
                             <div class="panel-body">
-                                {{ form.description(class="span3", style="resize:none;") }}<br>
+                                {{ form.description(style="width=70%; resize:none;") }}<br>
                             </div>
                         </div>
                     </div>
@@ -51,11 +53,22 @@
                     <!-- Submit button -->
                     <div class="form-group">
                         <input class="btn btn-primary" type="submit" value="Save Topic">
-                        <a href="{{ url_for('home', username=g.user.username) }}", class="btn btn-danger">Cancel</a>
+                        <a onclick="confirmDelete()" class="btn btn-danger">Delete</a>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+function confirmDelete() {
+    var title = $('#topic_title').text();
+    var parent = $('#parent').text();
+    console.log(title,parent);
+    if (confirm("Are you sure you want to delete "+title) == true) {
+            window.location.replace("/delete_topic/"+parent+"/"+title);
+    }
+}
+</script>
 {% endblock %}

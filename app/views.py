@@ -149,20 +149,40 @@ def create_new_topic(topic_parent):
         parent = topic_parent
         tags = form.tags.data.replace(' ', '').split(',')
         description = form.description.data
-        topic = UserTopic(title, parent, tags, description)
 
-        # Adds topic to DB and adds topic to list of user topics
-        if topic.parent == user.username:
-            g.user.topics.append(topic)
-            db.session.add(g.user)
+        topic = UserTopic.query.filter_by(title=title,parent=parent).first()
 
-        db.session.add(topic)
-        db.session.commit()
+        # if topic doesn'y already exist
+        if topic is None:
+            topic = UserTopic(title, parent, tags, description)
+            # Adds topic to DB and adds topic to list of user topics
+            if topic.parent == user.username:
+                g.user.topics.append(topic)
+                db.session.add(g.user)
 
-        flash("Topic "+title+" created succesfully!")
+            db.session.add(topic)
+            db.session.commit()
+
+            flash("Topic "+title+" created succesfully!")
+        else:
+            flash("That topic already exists!")
+
         return redirect(url_for('topic', topic_name=title, topic_parent=parent))
     else:
         for error in form.errors:
             flash("Please enter a "+str(error)+" for "+topic_name)
 
     return render_template('create_new_topic.html', topic_parent=topic_parent, form=form)
+
+@app.route('/delete_topic/<parent_name>/<topic_name>')
+@login_required
+def delete_topic(topic_name, parent_name):
+    topic = UserTopic.query.filter_by(title=topic_name, parent=parent_name).first()
+    
+    if topic:
+        flash("Deleted topic "+topic.title+"!")
+        db.session.delete(topic)
+        db.session.commit()
+    else:
+        flash("That topic doesn't exist!")
+    return redirect(url_for('home',username=g.user.username))
