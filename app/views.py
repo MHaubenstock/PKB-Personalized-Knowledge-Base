@@ -72,6 +72,7 @@ def register():
             return redirect(url_for('login'))
         else:
             form.username.errors.append('That username is already taken!')
+
     return render_template('register.html', form = form)
 
 @app.route('/logout')
