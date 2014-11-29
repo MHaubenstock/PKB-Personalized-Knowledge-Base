@@ -14,6 +14,7 @@ class RegisterForm(Form):
 	username = TextField("UserName", validators = [DataRequired("Username Field Required"), Length(min=3, max=15)])
 	password = PasswordField('New Password', validators = [DataRequired("Password Field Required"), Length(min=5, max=20), EqualTo('confirm', message='Passwords must match')])
 	confirm = PasswordField('Repeat Password')
+	email = TextField("Email", validators = [DataRequired("Email Required"), Length(min=6, max=30)])
 	recaptcha = RecaptchaField()
 
 class EditTopic(Form):

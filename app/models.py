@@ -14,8 +14,9 @@ class User(db.Model):
     confirmed_at = db.Column(db.DateTime())
 
 
-    def __init__(self, username, password, role=ROLE_USER):
+    def __init__(self, username, email, password, role=ROLE_USER):
         self.username = username
+        self.email = email
         self.set_password(password)
         self.role = role
         
