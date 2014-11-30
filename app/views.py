@@ -187,7 +187,7 @@ def delete_topic(parent_name,topic_name):
     topic = UserTopic.query.filter_by(title=topic_name, parent=parent_name).first()
     if topic:
         flash("Deleted topic "+topic.title+"!")
-        
+        delete_subtopics(topic)
 
         # call get_subtopics here:
         # subtopics = UserTopic.query.filter_by(parent = )
@@ -202,5 +202,12 @@ def delete_topic(parent_name,topic_name):
 
 """ Recursively dig through subtopic tree and return all subtopics of all
     subtopics of the topic to be deleted.                               """
-def get_subtopics():
-    pass
+def delete_subtopics(topic):
+    subtopics = UserTopic.query.filter_by(parent=topic.title).all()
+    if subtopics:
+        for subtopic in subtopics:
+            delete_subtopics(subtopic)
+            try:
+                db.session.delete(subtopic)
+            except:
+                flash("Could not delete", subtopic.title)
