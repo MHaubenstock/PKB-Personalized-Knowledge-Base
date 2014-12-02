@@ -25,6 +25,9 @@
                             </div>
                             <div class="panel-body">
                                 {{form.topicTitle(size=30, class = "span3", value=topic ,placeholder="Enter title here...")}}<br>
+                                {% for error in form.errors.topicTitle %}
+                                <span style="color:red;" class="help-inline">{{ "* "+(error) }}</span>
+                                {% endfor %}<br>
                             </div>
                         </div>
                     </div>
@@ -35,7 +38,10 @@
                                 <h3 class="panel-title" style="font-size:18px;">Description</h3>
                             </div>
                             <div class="panel-body">
-                                {{ form.description(maxlength="255", style="resize:none", placeholder="Enter description here...")}}<br>
+                                {{ form.description(maxlength="255", style="resize:none; margin-bottom:0px;", placeholder="Enter description here...")}}
+                                {% for error in form.errors.description %}
+                                <span style="color:red;" class="help-inline">{{ "* "+(error) }}</span>
+                                {% endfor %}<br>
                             </div>
                         </div>
                     </div>
@@ -46,7 +52,10 @@
                                 <h3 class="panel-title" style="font-size:18px;">Tags</h3>
                             </div>
                             <div class="panel-body">
-                                {{form.tags(size=30, class = "span3", value=tags, placeholder="tags (ex: python, IO, strings) ")}}<br>
+                                {{form.tags(size=30, class = "span3", value=tags, placeholder="tags (ex: python, IO, strings) ")}}
+                                {% for error in form.errors.tags %}
+                                <span style="color:red;" class="help-inline">{{ "* "+(error) }}</span>
+                                {% endfor %}
                             </div>
                         </div>
                     </div>

@@ -173,9 +173,6 @@ def create_new_topic(topic_parent):
             flash("That topic already exists!")
 
         return redirect(url_for('topic', topic_name=title, topic_parent=parent))
-    else:
-        for error in form.errors:
-            flash("Please enter a "+str(error)+" for "+form.topicTitle.data)
 
     return render_template('create_new_topic.html', topic_parent=topic_parent, form=form)
 
