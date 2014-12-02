@@ -115,12 +115,8 @@ def edittopic(user,topic_name,topic_parent):
         flash("That topic does not exist!")
         redirect(url_for('home', username=g.user.username))
 
-    form.topicTitle.data = topic.title
-    form.description.data = topic.description
-    form.tags.data = ', '.join([str(tag) for tag in topic.tags])
-
     if form.validate_on_submit():
-        print(form.topicTitle.data, form.description.data)
+        print("stuff:",form.topicTitle.data, form.description.data)
         if form.topicTitle.data and form.description.data:
             # gets new form data to update topic with
             form = EditTopic(request.form)
@@ -137,6 +133,10 @@ def edittopic(user,topic_name,topic_parent):
         else:
             for error in form.errors:
                 flash("Please enter a "+str(error)+" for "+form.topicTitle.data)
+
+    form.topicTitle.data = topic.title
+    form.description.data = topic.description
+    form.tags.data = ', '.join([str(tag) for tag in topic.tags])
 
     return render_template('edittopic.html', topic=topic, form=form)
 
