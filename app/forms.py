@@ -17,6 +17,10 @@ class RegisterForm(Form):
 	email = TextField("Email", validators = [DataRequired("Email Required"), Length(min=6, max=30), Email()])
 	recaptcha = RecaptchaField()
 
+class PasswordResetForm(Form):
+	password = PasswordField('Password', validators = [Length(min=6, max=20), Required(), EqualTo('password_confirm', message='Confirm password did not match the original password you entered.')])
+	password_confirm = PasswordField('Confirm Password', validators = [Length(min=6, max=20), Required()])
+
 class EditTopic(Form):
 	topicTitle = TextField("Topic title", validators = [DataRequired("Topic title required")])
 	tags = TextField("Tags")

@@ -13,3 +13,15 @@ RECAPTCHA_USE_SSL = False
 RECAPTCHA_PUBLIC_KEY = '6Lc7KfwSAAAAAO2ewgfog50aM8yr8RpPzrQNsg_e'
 RECAPTCHA_PRIVATE_KEY = '6Lc7KfwSAAAAAPUFrcSIZgbYWaAlDyXN7EfXZFqT'
 RECAPTCHA_OPTIONS = {'theme': 'white'}
+
+
+# Flask-Mail config 
+MAIL_SERVER = 'smpt.gmail.com'
+MAIL_PORT = 465
+MAIL_USE_TLS = True
+MAIL_USERNAME = 'statesinfinite@gmail.com'
+MAIL_PASSWORD = 'Buzzlightyear5'
+MAIL_DEBUG = False
+MAIL_FAIL_SILENTLY = True
+MAIL_DEFAULT_SENDER = '"Sender" <noreply@PKB.com>'
+

@@ -2,7 +2,7 @@ from app import app, db, login_manager
 from flask import render_template, flash, redirect, session, url_for, request, g
 from app.models import User
 from app.models import UserTopic
-from app.forms import LoginForm, RegisterForm, EditTopic
+from app.forms import LoginForm, RegisterForm, EditTopic, PasswordResetForm
 from flask.ext.login import login_user, logout_user, current_user, login_required
 import os
 
@@ -186,12 +186,16 @@ def help_page():
 def delete_topic(parent_name,topic_name):
     topic = UserTopic.query.filter_by(title=topic_name, parent=parent_name).first()
     if topic:
-        # deletes all subtopics from db first 
+        flash("Deleted topic "+topic.title+"!")
         delete_subtopics(topic)
-        # deletes topic from db
+
+        # call get_subtopics here:
+        # subtopics = UserTopic.query.filter_by(parent = )
+        # delete all subtopics of topic to be deleted:
+
+
         db.session.delete(topic)
         db.session.commit()
-        flash("Deleted topic "+topic.title+"!")
     else:
         flash("That topic doesn't exist!")
     return redirect(url_for('home',username=g.user.username))
@@ -207,3 +211,33 @@ def delete_subtopics(topic):
                 db.session.delete(subtopic)
             except:
                 flash("Could not delete", subtopic.title)
+
+
+@app.route('/recovery')
+def password_recovery_request():
+	return render_template('/recovery.html')
+
+@app.route('/recovery', methods=['POST'])
+def account_key_generator():
+	# Complete the request to generate a new password-reset key
+	# and send it to the provided email if it is valid
+
+	# Check to see if email exists
+	if not request.form.get('email'):
+		flash('Email does not exist, check the field and try again.')
+		return redirect(url_for('app.password_recovery_request'))
+	# Delete key if there was already one in place.
+	existing_keys = UserMeta.query.filter_by(key='password_rec_key', user_id=user.id)
+	if existing_keys:
+		for key in existing_keys:
+			deb.session.delete(key)
+
+	# Generate a password recovery key
+	key = str(random.getrandbits(128))
+	user.user_meta = [UserMeta(key='password_rec_key', val=key)]
+
+	# Send the email with key to user.
+	send('password_recovery', 'Password Recovery', [user.email], user=user, key=key)
+
+	flash('An email has been sent! Please check your inbox and follow the instructions to complete your password reset.')
+	return redirect(url_for('login'))

@@ -41,6 +41,14 @@ class User(db.Model):
     def __repr__(self):
         return '<User %r>' % (self.username)
 
+class UserMeta(db.Model):
+	__tablename__ = 'user_meta'
+	id = db.Column(db.Integer, primary_key=True)
+	key = db.Column(db.String(16)) 
+	val = db.Column(db.String(128))
+	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+	user = db.relationship("User", backref=db.backref('user_meta'))
+
 class UserTopic(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     title = db.Column(db.String(40))
