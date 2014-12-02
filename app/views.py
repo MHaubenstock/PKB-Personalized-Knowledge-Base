@@ -192,6 +192,8 @@ def delete_topic(parent_name,topic_name):
         db.session.delete(topic)
         db.session.commit()
         flash("Deleted topic "+topic.title+"!")
+    else:
+        flash("That topic doesn't exist!")
     return redirect(url_for('home',username=g.user.username))
 
 """ Recursively dig through subtopic tree and return all subtopics of all
