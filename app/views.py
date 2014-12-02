@@ -134,7 +134,7 @@ def edittopic(user,topic_name,topic_parent):
         return redirect(url_for('topic', topic_name=topic.title, topic_parent=topic.parent))
     else:
         for error in form.errors:
-            flash("Please enter a "+str(error)+" for "+topic_name)
+            flash("Please enter a "+str(error)+" for "+form.topicTitle.data)
 
     return render_template('edittopic.html', topic=topic, form=form)
 
@@ -173,7 +173,7 @@ def create_new_topic(topic_parent):
         return redirect(url_for('topic', topic_name=title, topic_parent=parent))
     else:
         for error in form.errors:
-            flash("Please enter a "+str(error)+" for "+topic_name)
+            flash("Please enter a "+str(error)+" for "+form.topicTitle.data)
 
     return render_template('create_new_topic.html', topic_parent=topic_parent, form=form)
 
