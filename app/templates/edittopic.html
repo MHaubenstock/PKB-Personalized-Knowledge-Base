@@ -24,6 +24,9 @@
                             </div>
                             <div class="panel-body">
                                 {{ form.topicTitle(size=30, style="width=70%;") }}<br>
+                                {% for error in form.errors.password %}
+                                <span class="help-inline">[{{error}}]</span><br>
+                                {% endfor %}
                             </div>
                         </div>
                     </div>
@@ -35,6 +38,9 @@
                             </div>
                             <div class="panel-body">
                                 {{ form.description(style="width=70%; resize:none;") }}<br>
+                                {% for error in form.errors.password %}
+                                <span class="help-inline">[{{error}}]</span><br>
+                                {% endfor %}
                             </div>
                         </div>
                     </div>
@@ -46,6 +52,9 @@
                             </div>
                             <div class="panel-body">
                                 {{ form.tags(style="width:100%;") }}<br>
+                                {% for error in form.errors.password %}
+                                <span class="help-inline">[{{error}}]</span><br>
+                                {% endfor %}
                             </div>
                         </div>
                     </div>

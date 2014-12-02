@@ -120,21 +120,23 @@ def edittopic(user,topic_name,topic_parent):
     form.tags.data = ', '.join([str(tag) for tag in topic.tags])
 
     if form.validate_on_submit():
-        # gets new form data to update topic with
-        form = EditTopic(request.form)
-        # saves topic information to the topic
-        topic.title = form.topicTitle.data
-        topic.tags = [x for x in form.tags.data.replace(' ', '').split(',') if x != ""]
-        topic.description = form.description.data
-        topic.parent = topic_parent
+        print(form.topicTitle.data, form.description.data)
+        if form.topicTitle.data and form.description.data:
+            # gets new form data to update topic with
+            form = EditTopic(request.form)
+            # saves topic information to the topic
+            topic.title = form.topicTitle.data
+            topic.tags = [x for x in form.tags.data.replace(' ', '').split(',') if x != ""]
+            topic.description = form.description.data
+            topic.parent = topic_parent
 
-        db.session.merge(topic)
-        db.session.commit()
+            db.session.merge(topic)
+            db.session.commit()
 
-        return redirect(url_for('topic', topic_name=topic.title, topic_parent=topic.parent))
-    else:
-        for error in form.errors:
-            flash("Please enter a "+str(error)+" for "+form.topicTitle.data)
+            return redirect(url_for('topic', topic_name=topic.title, topic_parent=topic.parent))
+        else:
+            for error in form.errors:
+                flash("Please enter a "+str(error)+" for "+form.topicTitle.data)
 
     return render_template('edittopic.html', topic=topic, form=form)
 
