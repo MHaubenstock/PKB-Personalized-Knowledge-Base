@@ -152,7 +152,7 @@ def create_new_topic(topic_parent):
         title = form.topicTitle.data
         parent = topic_parent
         # users must enter tags with commas separating
-        tags = form.tags.data.replace(' ', '').split(',')
+        tags = [x for x in form.tags.data.replace(' ', '').split(',') if x != ""]
         description = form.description.data
 
         if title == parent:
@@ -200,8 +200,8 @@ def delete_topic(parent_name,topic_name):
         flash("That topic doesn't exist!")
     return redirect(url_for('home',username=g.user.username))
 
-""" Recursively dig through subtopic tree and return all subtopics of all
-    subtopics of the topic to be deleted.                               """
+# Recursively dig through subtopic tree and return all 
+# subtopics of allsubtopics of the topic to be deleted.                          
 def delete_subtopics(topic):
     subtopics = UserTopic.query.filter_by(parent=topic.title).all()
     if subtopics:
