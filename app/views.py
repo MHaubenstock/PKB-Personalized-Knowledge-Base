@@ -92,14 +92,14 @@ def home(username):
 @app.route('/<topic_parent>/<topic_name>', methods = ['GET', 'POST'])
 @login_required
 def topic(topic_name, topic_parent):
-    topic = UserTopic.query.filter(UserTopic.title == topic_name).first()
+    topic = UserTopic.query.filter_by(title=topic_name, user=g.user).first()
 
     if topic is None:
         return redirect(url_for('home', username=g.user.username))
 
     description = topic.description
     tags = topic.tags
-    subTopics = UserTopic.query.filter(UserTopic.parent == topic_name).all()
+    subTopics = UserTopic.query.filter_by(parent=topic_name).all()
     topic_parent = UserTopic.query.filter_by(title=topic.parent).first()
 
     return render_template('topic.html', topic = topic, topic_parent=topic_parent, subTopics = subTopics, description = description, tags = tags)
@@ -110,7 +110,7 @@ def edittopic(user,topic_name,topic_parent):
     #For submitting topic data
     form = EditTopic()
 
-    topic = UserTopic.query.filter_by(title = topic_name).first()
+    topic = UserTopic.query.filter_by(title = topic_name,user=g.user).first()
     if topic is None:
         flash("That topic does not exist!")
         redirect(url_for('home', username=g.user.username))
@@ -160,7 +160,7 @@ def create_new_topic(topic_parent):
             return render_template('create_new_topic.html', topic_parent=topic_parent, form=form)
 
         # queries database for topic to see if it exists
-        topic = UserTopic.query.filter_by(title=title,parent=parent).first()
+        topic = UserTopic.query.filter_by(title=title,parent=parent,user=user).first()
 
         # if no topic exists in the database
         if topic is None:
@@ -169,8 +169,7 @@ def create_new_topic(topic_parent):
             # if topic is high level topic, add to user's list of topics
             if topic.parent == user.username:
                 g.user.topics.append(topic)
-                topic.user = user
-
+            topic.user = user
             db.session.add(topic)
             db.session.commit()
 
@@ -188,7 +187,7 @@ def help_page():
 @app.route('/delete_topic/<parent_name>/<topic_name>')
 @login_required
 def delete_topic(parent_name,topic_name):
-    topic = UserTopic.query.filter_by(title=topic_name, parent=parent_name).first()
+    topic = UserTopic.query.filter_by(title=topic_name, parent=parent_name,user=g.user).first()
     if topic:
         # deletes all subtopics from db first 
         delete_subtopics(topic)
@@ -203,7 +202,7 @@ def delete_topic(parent_name,topic_name):
 # Recursively dig through subtopic tree and return all 
 # subtopics of allsubtopics of the topic to be deleted.                          
 def delete_subtopics(topic):
-    subtopics = UserTopic.query.filter_by(parent=topic.title).all()
+    subtopics = UserTopic.query.filter_by(parent=topic.title,user=g.user).all()
     if subtopics:
         for subtopic in subtopics:
             delete_subtopics(subtopic)
@@ -248,7 +247,7 @@ def search(tag):
 
     # can't think of a good way to query db for 
     # tags so this will have to do:
-    user_topics = collect_topics(user.username)
+    user_topics = UserTopic.query.filter_by(user=user)
     topics_with_tag = []
 
     for topic in user_topics:
@@ -259,7 +258,7 @@ def search(tag):
     return render_template("search.html", topics=topics_with_tag, tag=tag)
 
 def collect_topics(parent):
-    subtopics = UserTopic.query.filter_by(parent=parent).all()
+    subtopics = UserTopic.query.filter_by(parent=parent,user=g.user).all()
     if not subtopics:
         return []
     results = []
