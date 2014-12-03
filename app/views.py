@@ -147,32 +147,37 @@ def create_new_topic(topic_parent):
     user = g.user
 
     if form.validate_on_submit():
+
+        # collects topic attributes from form
         title = form.topicTitle.data
         parent = topic_parent
+        # users must enter tags with commas separating
         tags = form.tags.data.replace(' ', '').split(',')
         description = form.description.data
-
-        topic = UserTopic.query.filter_by(title=title,parent=parent).first()
 
         if title == parent:
             flash("Topic " +title+" cannot have the same name as parent "+parent)
             return render_template('create_new_topic.html', topic_parent=topic_parent, form=form)
-        # if topic doesn'y already exist
-        elif topic is None:
+
+        # queries database for topic to see if it exists
+        topic = UserTopic.query.filter_by(title=title,parent=parent).first()
+
+        # if no topic exists in the database
+        if topic is None:
             topic = UserTopic(title, parent, tags, description)
-            # Adds topic to DB and adds topic to list of user topics
+
+            # if topic is high level topic, add to user's list of topics
             if topic.parent == user.username:
                 g.user.topics.append(topic)
-                db.session.add(g.user)
+                topic.user = user
 
             db.session.add(topic)
             db.session.commit()
 
             flash("Topic "+title+" created succesfully!")
+            return redirect(url_for("topic", topic_name=title, topic_parent=parent))
         else:
             flash("That topic already exists!")
-
-        return redirect(url_for('topic', topic_name=title, topic_parent=parent))
 
     return render_template('create_new_topic.html', topic_parent=topic_parent, form=form)
 
@@ -236,3 +241,29 @@ def account_key_generator():
 
 	flash('An email has been sent! Please check your inbox and follow the instructions to complete your password reset.')
 	return redirect(url_for('login'))
+
+@app.route('/search/<tag>')
+def search(tag):
+    user = g.user
+
+    # can't think of a good way to query db for 
+    # tags so this will have to do:
+    user_topics = collect_topics(user.username)
+    topics_with_tag = []
+
+    for topic in user_topics:
+        for t_tag in topic.tags:
+            if t_tag == tag:
+                topics_with_tag.append(topic)
+
+    return render_template("search.html", topics=topics_with_tag, tag=tag)
+
+def collect_topics(parent):
+    subtopics = UserTopic.query.filter_by(parent=parent).all()
+    if not subtopics:
+        return []
+    results = []
+    for subtopic in subtopics:
+        results.append(subtopic)
+        results += collect_topics(subtopic.title)
+    return results

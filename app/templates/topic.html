@@ -11,7 +11,9 @@
                 </h3>
                 {% if topic_parent != None %}
                     Parent: 
-                    <a id="parent_topic" href="{{ url_for('topic', topic_name=topic_parent.title, topic_parent=topic_parent.parent) }}" style="color:white;">{{ topic_parent.title }}</a>
+                    <a class="btn btn-primary" id="parent_topic" href="{{ url_for('topic', topic_name=topic_parent.title, topic_parent=topic_parent.parent) }}" style="color:white; margin-left:5px;">{{ topic_parent.title }}</a>
+                {% else %}
+                    Top Level Topic
                 {% endif %}
             </div>
 
@@ -65,7 +67,7 @@
                                     <i class="fa fa-tags"></i>
                                     {% if topic.tags %}
                                         {% for tag in topic.tags %}
-                                        <button class="btn btn-default">{{ tag }}</button>
+                                        <a class="btn btn-default" href="{{ url_for('search', tag=tag) }}">{{ tag }}</a>
                                         {% endfor %}
                                     {% else %}
                                     <p>Click Edit Topic to add some tags!</p>

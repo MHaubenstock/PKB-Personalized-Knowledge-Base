@@ -1,17 +1,20 @@
 {% extends "base.html" %}
 {% block content %}
 {% include 'flash.html' %}
+
 <div class="panel panel-primary">
+  <div class="panel-heading">
+    <h3 class="panel-title" id="topic_title" style="font-size:25px;">
+        <b>Search results for the topics with tag "{{ tag }}".<b>
+    </h3>
+  </div>
   <div class="panel-body">
-    <h2 class="text-primary" style="font-size:25px">Welcome to PKB {{ g.user.username }}. Let's get started...</h2>
-    <p class="text-info">
-      PKB is the one stop repository for all you know and more! Once you access your myPKB you can create and delete topics in your Topics list. Create your own personal knowledge encyclopedia to build and review as you learn more about your favorite topics!
-    </p>
+    <p class="text-info">This page displays all other topics in your PKB with this tag!</p>
   </div>
   <div class="panel-footer" style="padding:0 0 0 0">
     <div class="panel panel-primary" style="margin-bottom:0px;">
       <div class="panel-heading">
-        <h2 class="panel-title" style="font-size:24px">Top Level Topics</h2>
+        <h2 class="panel-title" style="font-size:24px">Topics</h2>
       </div>
       <div class="panel-body">
         <div class="list-group">
@@ -37,8 +40,8 @@
             <div class="panel-footer" style="padding:0 0 0 0">
               <div class="btn-group" role="group">
                 <button class="btn btn-primary" disabled><span class="glyphicon glyphicon-tags" aria-hidden="true"><i class="icon-tags"></i></span>&nbsp;&nbsp;tags:</button>
-                {% for t in topic.tags %}
-                  <a href="{{ url_for('search', tag=t) }}" class="btn btn-default">{{ t }}</a>
+                {% for tag in topic.tags %}
+                  <a class="btn btn-default" href="{{ url_for('search', tag=tag) }}">{{ tag }}</a>
                 {% endfor %}
               </div>
             </div>
@@ -46,7 +49,6 @@
           </div>
           {% endfor %}
         </div>
-        <a class="btn btn-primary btn-lg btn-block" href="{{ url_for('create_new_topic', topic_parent=g.user.username) }}">Create New Topic!</a>
       </div>
     </div>
   </div>

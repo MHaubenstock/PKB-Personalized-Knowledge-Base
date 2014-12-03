@@ -7,10 +7,11 @@
         <div class="panel panel-primary">
             <div class="panel-heading">
                 <h3 class="panel-title" style="font-size:25px;">Create New Topic</h3>
-                {% if topic_parent != g.user.username %}
-                    <h4>Child topic of <a style="color:#FFFFFF" href="url_for('topic', topic_name=topicParent, topicParent=UserTopic.query.filter(UserTopic.title == topic_parent).first().parent">{{ topic_parent }}</a></h4>
+                {% if topic_parent != None %}
+                    Parent: 
+                    <a class="btn btn-primary" id="parent_topic" href="{{ url_for('topic', topic_name=topic_parent.title, topic_parent=topic_parent.parent) }}" style="color:white; margin-left:5px;">{{ topic_parent }}</a>
                 {% else %}
-
+                    Top Level Topic
                 {% endif %}
             </div>
             <div class="panel-body">
