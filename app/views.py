@@ -86,7 +86,7 @@ def logout():
 def home(username):
     user = g.user
     #Get top level topic titles
-    topLevelTopicTitles = [t for t in user.topics]
+    topLevelTopicTitles = UserTopic.query.filter_by(parent=user.username).all()
     return render_template('home.html', username=user.username, topics=topLevelTopicTitles)
 
 @app.route('/<topic_parent>/<topic_name>', methods = ['GET', 'POST'])
