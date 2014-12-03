@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    {% if title %}
+    <title>PKB - {{ title }}</title>
+    {% else %}
+    <title>PKB</title>
+    {% endif %}
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/template.css"
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <img class="navbar-brand" src = "https://cloud.githubusercontent.com/assets/8584480/5037914/2619ab10-6b59-11e4-8f8d-04d50a1e94f0.jpg" border = "0" valign = "center">
+            <a class="navbar-brand" href="/">PKB</a>
+          </div>
+          <div>
+          <ul class="nav navbar-nav">
+            {% if g.user.is_authenticated() %}
+            <li><a href="{{ url_for('home', username=g.user.username) }}">Home</a></li>
+            <li><a href="{{ url_for('logout') }}">Logout</a></li>
+            <li><a href="{{ url_for('help_page') }}">Help</a></li>
+            {% else %}
+            <li><a href="{{ url_for('login') }}">Login</a></li>
+            <li><a href="{{ url_for('register') }}">Register</a></li>
+            <li><a href="{{ url_for('help_page') }}">Help</a></li>
+            {% endif %}
+          </ul>
+          </div>
+        </div>
+      </nav>
+      <div class="row">
+        <div class="span12">
+          <div class="well">
+         {% block content %}{% endblock %} 
+         <h5>&copy;Copyright PythonGroup 2014. All Rights Reserved.</h5>
+         </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

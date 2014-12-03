@@ -263,7 +263,6 @@ def password_reset_request():
         if not user:
                 flash('No user was found with that email address! Please try again.')
                 return redirect(url_for('app.password_recovery_request'))
-        print "## User & Email was good!"
         # Find any old keys the user may have and delete them
         ## Before generating and assigning a new one to the user.
         existing_keys = UserMeta.query.filter_by(key='password_recovery_key', user_id=user.id)
