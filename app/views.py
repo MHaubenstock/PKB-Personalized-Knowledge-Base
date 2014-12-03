@@ -99,7 +99,7 @@ def topic(topic_name, topic_parent):
 
     description = topic.description
     tags = topic.tags
-    subTopics = UserTopic.query.filter_by(parent=topic_name).all()
+    subTopics = UserTopic.query.filter_by(parent=topic_name, user=g.user).all()
     topic_parent = UserTopic.query.filter_by(title=topic.parent).first()
 
     return render_template('topic.html', topic = topic, topic_parent=topic_parent, subTopics = subTopics, description = description, tags = tags)
