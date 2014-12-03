@@ -10,6 +10,7 @@ class User(db.Model):
     pwd_hash = db.Column(db.String(64))
     role = db.Column(db.SmallInteger, default = ROLE_USER)
     topics = db.relationship('UserTopic', backref = 'user', lazy = 'dynamic')
+    meta = db.relationship('UserMeta', backref = 'user', lazy = 'dynamic')
     email = db.Column(db.String(255), unique=True)
     confirmed_at = db.Column(db.DateTime())
 
@@ -42,12 +43,11 @@ class User(db.Model):
         return '<User %r>' % (self.username)
 
 class UserMeta(db.Model):
-	__tablename__ = 'user_meta'
-	id = db.Column(db.Integer, primary_key=True)
-	key = db.Column(db.String(16)) 
-	val = db.Column(db.String(128))
-	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-	user = db.relationship("User", backref=db.backref('user_meta'))
+        __tablename__ = 'user_meta'
+        id = db.Column(db.Integer, primary_key=True)
+        key = db.Column(db.String(16))
+        val = db.Column(db.String(128))
+        user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
 class UserTopic(db.Model):
     id = db.Column(db.Integer, primary_key = True)

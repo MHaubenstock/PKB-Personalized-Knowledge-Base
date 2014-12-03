@@ -18,8 +18,8 @@ class RegisterForm(Form):
 	recaptcha = RecaptchaField()
 
 class PasswordResetForm(Form):
-	password = PasswordField('Password', validators = [Length(min=6, max=20), Required(), EqualTo('password_confirm', message='Confirm password did not match the original password you entered.')])
-	password_confirm = PasswordField('Confirm Password', validators = [Length(min=6, max=20), Required()])
+	password = PasswordField('Password', validators = [Length(min=6, max=20), DataRequired(), EqualTo('password_confirm', message='Confirm password did not match the original password you entered.')])
+	password_confirm = PasswordField('Confirm Password', validators = [Length(min=6, max=20), DataRequired()])
 
 class EditTopic(Form):
 	topicTitle = TextField("Topic title", validators = [DataRequired("Topic title required")])

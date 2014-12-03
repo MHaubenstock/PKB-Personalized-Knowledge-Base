@@ -1,9 +1,11 @@
 from app import app, db, login_manager
 from flask import render_template, flash, redirect, session, url_for, request, g
-from app.models import User
-from app.models import UserTopic
+from app.models import User, UserMeta, UserTopic
 from app.forms import LoginForm, RegisterForm, EditTopic, PasswordResetForm
 from flask.ext.login import login_user, logout_user, current_user, login_required
+from werkzeug.security import generate_password_hash
+from mail import send
+import random
 import os
 
 @login_manager.user_loader
@@ -211,36 +213,6 @@ def delete_subtopics(topic):
             except:
                 flash("Could not delete", subtopic.title)
 
-
-@app.route('/recovery')
-def password_recovery_request():
-	return render_template('/recovery.html')
-
-@app.route('/recovery', methods=['POST'])
-def account_key_generator():
-	# Complete the request to generate a new password-reset key
-	# and send it to the provided email if it is valid
-
-	# Check to see if email exists
-	if not request.form.get('email'):
-		flash('Email does not exist, check the field and try again.')
-		return redirect(url_for('app.password_recovery_request'))
-	# Delete key if there was already one in place.
-	existing_keys = UserMeta.query.filter_by(key='password_rec_key', user_id=user.id)
-	if existing_keys:
-		for key in existing_keys:
-			deb.session.delete(key)
-
-	# Generate a password recovery key
-	key = str(random.getrandbits(128))
-	user.user_meta = [UserMeta(key='password_rec_key', val=key)]
-
-	# Send the email with key to user.
-	send('password_recovery', 'Password Recovery', [user.email], user=user, key=key)
-
-	flash('An email has been sent! Please check your inbox and follow the instructions to complete your password reset.')
-	return redirect(url_for('login'))
-
 @app.route('/search/<tag>')
 def search(tag):
     user = g.user
@@ -266,3 +238,72 @@ def collect_topics(parent):
         results.append(subtopic)
         results += collect_topics(subtopic.title)
     return results
+
+
+
+########################### Account Recovery Views
+@app.route('/recovery')
+def password_recovery_request():
+        return render_template('/recovery/host/recovery_request.html')
+@app.route('/recovery', methods=['POST'])
+def password_reset_request():
+        '''
+        + Generate a form to obtain email
+        + Once a valid email attached to the correct user is actualized,
+                Generate a password reset key and mail it to the email
+                that the user provided in the original form.
+        '''
+
+        # Check to see if email exists
+        if not request.form.get('email'):
+                flash('Email does not exist, check the field and try again.')
+                return redirect(url_for('app.password_recovery_request'))
+        # Find the user associated with the email, if any
+        user = User.query.filter_by(email=request.form['email']).first()
+        if not user:
+                flash('No user was found with that email address! Please try again.')
+                return redirect(url_for('app.password_recovery_request'))
+        print "## User & Email was good!"
+        # Find any old keys the user may have and delete them
+        ## Before generating and assigning a new one to the user.
+        existing_keys = UserMeta.query.filter_by(key='password_recovery_key', user_id=user.id)
+        if existing_keys:
+                for key in existing_keys:
+                        db.session.delete(key)
+
+        # Generate a password recovery key:(Just random bits converted to string)
+        key = str(random.getrandbits(128))
+        user.meta = [UserMeta(key='password_rec_key', val=key)]
+        db.session.commit()
+
+        # Send the email with key to user.
+        send('recovery/email/reset_password_link', 'PKB Password Recovery', [user.email], user=user, key=key)
+
+        flash('An email has been sent! Please check your inbox and follow the instructions to complete your password reset.')
+        return redirect(url_for('login'))
+
+@app.route('/recovery/<key>')
+def password_recovery(key, form=None):
+        # Create a new form for entering a new password
+        if not form:
+                form = PasswordResetForm(request.form)
+        return render_template('/recovery/host/password_reset_page.html', key=key, form=form)
+@app.route('/recovery/<key>', methods=['POST'])
+def reset_password(key):
+        # Send user a password form that validates that password = confirm_password
+        form = PasswordResetForm(request.form)
+        if form.validate():
+                # key_holder links to the user who possesses the matching password reset key in their metadata
+                key_holder = UserMeta.query.filter_by(key='password_rec_key', val=key).first()
+                if not key_holder:
+                        flash("Your password reset key has expired, please request another and try again.")
+                        return redirect(url_for('login'))
+
+                # Else, Update Password and delete the key
+                key_holder.user.pwd_hash = generate_password_hash(form.password.data)
+                db.session.delete(key_holder)
+                db.session.commit()
+
+                flash("Your password has been successfully updated!")
+                return redirect(url_for('login'))
+        return password_recovery(key, form)

@@ -27,10 +27,11 @@
             {% if g.user.is_authenticated() %}
             <li><a href="{{ url_for('home', username=g.user.username) }}">Home</a></li>
             <li><a href="{{ url_for('logout') }}">Logout</a></li>
-            <li><a href="{{ url_for('help_page') }}">Help</a></li>
+	    <li><a href="{{ url_for('help_page') }}">Help</a></li>
             {% else %}
             <li><a href="{{ url_for('login') }}">Login</a></li>
             <li><a href="{{ url_for('register') }}">Register</a></li>
+            <li><a href="{{ url_for('password_recovery_request') }}">Password Reset</a></li>
             <li><a href="{{ url_for('help_page') }}">Help</a></li>
             {% endif %}
           </ul>
