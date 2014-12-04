@@ -12,6 +12,8 @@ from flask import render_template
 from flask.ext.mail import Mail, Message
 import os.path
 
+mail = Mail(app)
+
 def send(template, subject, recipients, **templatevars):
     """Send an e-mail with a jinja2 template"""
     
