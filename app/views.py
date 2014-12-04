@@ -4,7 +4,7 @@ from app.models import User, UserMeta, UserTopic
 from app.forms import LoginForm, RegisterForm, EditTopic, PasswordResetForm
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from werkzeug.security import generate_password_hash
-from mail import send
+from app.mail import send
 import random
 import os
 

@@ -12,14 +12,10 @@ from flask import render_template
 from flask.ext.mail import Mail, Message
 import os.path
 
-
-mail = Mail(app)
-
-
 def send(template, subject, recipients, **templatevars):
     """Send an e-mail with a jinja2 template"""
     
-    print "Made it to send!"
+    #print "Made it to send!"
     path = os.path.dirname(__file__)
     plaintext_template = '%s%stemplates/%s.txt' % (path, os.path.sep,
                                                           template)
@@ -29,7 +25,7 @@ def send(template, subject, recipients, **templatevars):
                   sender=app.config['MAIL_DEFAULT_SENDER'],
                   recipients=recipients)
 
-    print "Message is created..."
+    #print "Message is created..."
     # Plain-text template
     if os.path.exists(plaintext_template):
         msg.body = render_template('%s.txt' % template,
@@ -53,5 +49,5 @@ def send(template, subject, recipients, **templatevars):
     if app.config['TESTING']:
         return True
     
-    print "Returning the message..."
+    # print "Returning the message..."
     return mail.send(msg)  # pragma: no cover
