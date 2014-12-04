@@ -245,6 +245,7 @@ def collect_topics(parent):
 @app.route('/recovery')
 def password_recovery_request():
         return render_template('/recovery/host/recovery_request.html')
+        
 @app.route('/recovery', methods=['POST'])
 def password_reset_request():
         '''
@@ -257,12 +258,12 @@ def password_reset_request():
         # Check to see if email exists
         if not request.form.get('email'):
                 flash('Email does not exist, check the field and try again.')
-                return redirect(url_for('app.password_recovery_request'))
+                return redirect(url_for('password_recovery_request'))
         # Find the user associated with the email, if any
         user = User.query.filter_by(email=request.form['email']).first()
-        if not user:
+        if user is None:
                 flash('No user was found with that email address! Please try again.')
-                return redirect(url_for('app.password_recovery_request'))
+                return redirect(url_for('password_recovery_request'))
         # Find any old keys the user may have and delete them
         ## Before generating and assigning a new one to the user.
         existing_keys = UserMeta.query.filter_by(key='password_recovery_key', user_id=user.id)
@@ -287,6 +288,7 @@ def password_recovery(key, form=None):
         if not form:
                 form = PasswordResetForm(request.form)
         return render_template('/recovery/host/password_reset_page.html', key=key, form=form)
+
 @app.route('/recovery/<key>', methods=['POST'])
 def reset_password(key):
         # Send user a password form that validates that password = confirm_password
